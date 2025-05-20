@@ -1,8 +1,10 @@
 export interface User {
-  fullName: string;
+  id: number;
+  name: string;
   email: string;
   userName: string;
-  password: string;
+  password_hash: string;
+  created_at: Date;
 }
 
 export interface UserLoginRequest {
@@ -11,8 +13,8 @@ export interface UserLoginRequest {
 }
 
 export interface UserAuthenticatedResponse {
-  fullName: string;
+  id: number;
+  name: string;
   email: string;
-  userName: string;
   token: string;
 }

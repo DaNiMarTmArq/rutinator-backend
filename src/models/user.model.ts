@@ -7,18 +7,24 @@ export async function findAll(): Promise<User[]> {
 }
 
 export async function findById(userId: number): Promise<User | null> {
-  const [rows] = await db.query("SELECT * FROM users WHERE userId = ?", [
-    userId,
+  const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [userId]);
+  const result = (rows as User[])[0];
+  return result || null;
+}
+
+export async function findByName(userName: string): Promise<User | null> {
+  const [rows] = await db.query("SELECT * FROM users WHERE name = ?", [
+    userName,
   ]);
   const result = (rows as User[])[0];
   return result || null;
 }
 
-export async function create(user: User): Promise<any> {
-  const { fullName, email, userName, password } = user;
+export async function create(user: User): Promise<User> {
+  const { name, email, password_hash } = user;
   const [result]: any = await db.query(
-    "INSERT INTO users (fullName, email, userName, password) VALUES (?, ?, ?, ?)",
-    [fullName, email, userName, password]
+    "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?, ?)",
+    [name, email, password_hash]
   );
-  return result;
+  return result as User;
 }
