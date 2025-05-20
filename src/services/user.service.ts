@@ -1,13 +1,16 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
+  User,
   UserAuthenticatedResponse,
   UserLoginRequest,
+  UserRegisterRequest,
 } from "../models/interfaces/user.interfaces";
-import { findByName } from "../models/user.model";
-
-const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRATION = "1d";
+import {
+  createUser,
+  findByEmailOrUsername,
+  findByName,
+} from "../models/user.model";
 
 export async function login(
   credentials: UserLoginRequest
@@ -27,13 +30,7 @@ export async function login(
     throw new Error("Invalid username or password");
   }
 
-  if (!JWT_SECRET) throw new Error("Error creating the token");
-
-  const token = jwt.sign(
-    { userName: user.userName, email: user.email },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRATION }
-  );
+  const token = createToken({ userName: user.name, email: user.email });
 
   return {
     id: user.id,
@@ -41,4 +38,53 @@ export async function login(
     email: user.email,
     token,
   };
+}
+
+export async function register(
+  newUser: UserRegisterRequest
+): Promise<UserAuthenticatedResponse> {
+  const existingUser = await findByEmailOrUsername(
+    newUser.email,
+    newUser.username
+  );
+  if (existingUser) {
+    throw new Error("Email or username already in use");
+  }
+
+  const hashedPassword = await bcrypt.hash(newUser.password, 10);
+
+  newUser.password = hashedPassword;
+
+  await createUser(newUser);
+  const savedUser = await findByName(newUser.username);
+
+  if (!savedUser) throw new Error("Error while creating the user");
+
+  const token = createToken({
+    userName: newUser.username,
+    email: newUser.email,
+  });
+
+  return {
+    id: savedUser.id,
+    name: savedUser.name,
+    email: savedUser.email,
+    token,
+  };
+}
+
+interface UserDetails {
+  userName: string;
+  email: string;
+}
+
+function createToken(userDetails: UserDetails) {
+  const JWT_SECRET = process.env.JWT_SECRET;
+  const JWT_EXPIRATION = "1d";
+
+  if (!JWT_SECRET) throw new Error("Error creating the token");
+
+  return jwt.sign(userDetails, JWT_SECRET, {
+    expiresIn: JWT_EXPIRATION,
+  });
 }

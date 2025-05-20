@@ -1,5 +1,5 @@
 import { db } from "../db/db";
-import { User } from "./interfaces/user.interfaces";
+import { User, UserRegisterRequest } from "./interfaces/user.interfaces";
 
 export async function findAll(): Promise<User[]> {
   const [rows] = await db.query("SELECT * FROM users");
@@ -12,6 +12,18 @@ export async function findById(userId: number): Promise<User | null> {
   return result || null;
 }
 
+export async function findByEmailOrUsername(
+  email: string,
+  userName: string
+): Promise<User | null> {
+  const [rows] = await db.query(
+    "SELECT * FROM users WHERE email = ? OR name = ?",
+    [email, userName]
+  );
+  console.log((rows as User[])[0]);
+  return (rows as User[])[0] || null;
+}
+
 export async function findByName(userName: string): Promise<User | null> {
   const [rows] = await db.query("SELECT * FROM users WHERE name = ?", [
     userName,
@@ -20,11 +32,11 @@ export async function findByName(userName: string): Promise<User | null> {
   return result || null;
 }
 
-export async function create(user: User): Promise<User> {
-  const { name, email, password_hash } = user;
+export async function createUser(user: UserRegisterRequest): Promise<User> {
+  const { username, email, password } = user;
   const [result]: any = await db.query(
-    "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?, ?)",
-    [name, email, password_hash]
+    "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+    [username, email, password]
   );
   return result as User;
 }
