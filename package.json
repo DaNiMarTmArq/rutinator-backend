@@ -20,6 +20,11 @@
   },
   "homepage": "https://github.com/DaNiMarTmArq/rutinator-backend#readme",
   "devDependencies": {
+    "@types/node": "^22.15.20",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "mysql2": "^3.14.1"
   }
 }
