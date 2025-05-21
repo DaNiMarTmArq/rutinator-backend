@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
-  User,
   UserAuthenticatedResponse,
   UserLoginRequest,
   UserRegisterRequest,
@@ -9,6 +8,7 @@ import {
 import {
   createUser,
   findByEmailOrUsername,
+  findById,
   findByName,
 } from "../models/user.model";
 
@@ -55,14 +55,14 @@ export async function register(
 
   newUser.password = hashedPassword;
 
-  await createUser(newUser);
-  const savedUser = await findByName(newUser.username);
+  const insertId = await createUser(newUser);
+  const savedUser = await findById(insertId);
 
   if (!savedUser) throw new Error("Error while creating the user");
 
   const token = createToken({
-    userName: newUser.username,
-    email: newUser.email,
+    userName: savedUser.name,
+    email: savedUser.email,
   });
 
   return {

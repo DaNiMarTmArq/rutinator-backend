@@ -20,7 +20,6 @@ export async function findByEmailOrUsername(
     "SELECT * FROM users WHERE email = ? OR name = ?",
     [email, userName]
   );
-  console.log((rows as User[])[0]);
   return (rows as User[])[0] || null;
 }
 
@@ -32,11 +31,11 @@ export async function findByName(userName: string): Promise<User | null> {
   return result || null;
 }
 
-export async function createUser(user: UserRegisterRequest): Promise<User> {
+export async function createUser(user: UserRegisterRequest): Promise<number> {
   const { username, email, password } = user;
   const [result]: any = await db.query(
     "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
     [username, email, password]
   );
-  return result as User;
+  return result.insertId as number;
 }
