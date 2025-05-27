@@ -11,6 +11,13 @@ import {
   findById,
   findByName,
 } from "../models/user.model";
+import {
+  AppError,
+  InvalidUserCredentials,
+  TokenCreationError,
+  UserAlreadyExistsError,
+} from "../errors/errors";
+import { HttpStatus } from "../errors/http.errors";
 
 export async function login(
   credentials: UserLoginRequest
@@ -18,7 +25,7 @@ export async function login(
   const user = await findByName(credentials.username);
 
   if (!user) {
-    throw new Error("Invalid username or password");
+    throw new InvalidUserCredentials();
   }
 
   const passwordMatches = await bcrypt.compare(
@@ -27,7 +34,7 @@ export async function login(
   );
 
   if (!passwordMatches) {
-    throw new Error("Invalid username or password");
+    throw new InvalidUserCredentials();
   }
 
   const token = createToken({ userName: user.name, email: user.email });
@@ -48,7 +55,7 @@ export async function register(
     newUser.username
   );
   if (existingUser) {
-    throw new Error("Email or username already in use");
+    throw new UserAlreadyExistsError();
   }
 
   const hashedPassword = await bcrypt.hash(newUser.password, 10);
@@ -58,7 +65,11 @@ export async function register(
   const insertId = await createUser(newUser);
   const savedUser = await findById(insertId);
 
-  if (!savedUser) throw new Error("Error while creating the user");
+  if (!savedUser)
+    throw new AppError(
+      "Error while creating the user",
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
 
   const token = createToken({
     userName: savedUser.name,
@@ -82,7 +93,7 @@ function createToken(userDetails: UserDetails) {
   const JWT_SECRET = process.env.JWT_SECRET;
   const JWT_EXPIRATION = "1d";
 
-  if (!JWT_SECRET) throw new Error("Error creating the token");
+  if (!JWT_SECRET) throw new TokenCreationError();
 
   return jwt.sign(userDetails, JWT_SECRET, {
     expiresIn: JWT_EXPIRATION,
