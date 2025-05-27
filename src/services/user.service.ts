@@ -33,7 +33,7 @@ export async function login(
   const token = createToken({ userName: user.name, email: user.email });
 
   return {
-    id: user.id,
+    id: user.user_id,
     name: user.name,
     email: user.email,
     token,
@@ -66,7 +66,7 @@ export async function register(
   });
 
   return {
-    id: savedUser.id,
+    id: savedUser.user_id,
     name: savedUser.name,
     email: savedUser.email,
     token,
