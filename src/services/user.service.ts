@@ -40,8 +40,9 @@ export async function login(
   const token = createToken({ userName: user.name, email: user.email });
 
   return {
-    id: user.user_id,
+    id: user.id,
     name: user.name,
+    username: user.username,
     email: user.email,
     token,
   };
@@ -77,7 +78,8 @@ export async function register(
   });
 
   return {
-    id: savedUser.user_id,
+    id: savedUser.id,
+    username: savedUser.username,
     name: savedUser.name,
     email: savedUser.email,
     token,

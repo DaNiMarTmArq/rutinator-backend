@@ -1,8 +1,8 @@
 export interface User {
-  user_id: number;
+  id: number;
   name: string;
   email: string;
-  userName: string;
+  username: string;
   password_hash: string;
   created_at: Date;
 }
@@ -13,6 +13,7 @@ export interface UserLoginRequest {
 }
 
 export interface UserRegisterRequest {
+  name: string;
   username: string;
   email: string;
   password: string;
@@ -21,6 +22,7 @@ export interface UserRegisterRequest {
 export interface UserAuthenticatedResponse {
   id: number;
   name: string;
+  username: string;
   email: string;
   token: string;
 }
