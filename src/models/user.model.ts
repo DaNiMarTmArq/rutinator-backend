@@ -17,14 +17,14 @@ export async function findByEmailOrUsername(
   userName: string
 ): Promise<User | null> {
   const [rows] = await db.query(
-    "SELECT * FROM users WHERE email = ? OR name = ?",
+    "SELECT * FROM users WHERE email = ? OR username = ?",
     [email, userName]
   );
   return (rows as User[])[0] || null;
 }
 
 export async function findByName(userName: string): Promise<User | null> {
-  const [rows] = await db.query("SELECT * FROM users WHERE name = ?", [
+  const [rows] = await db.query("SELECT * FROM users WHERE username = ?", [
     userName,
   ]);
   const result = (rows as User[])[0];
@@ -32,10 +32,10 @@ export async function findByName(userName: string): Promise<User | null> {
 }
 
 export async function createUser(user: UserRegisterRequest): Promise<number> {
-  const { username, email, password } = user;
+  const { name, username, email, password } = user;
   const [result]: any = await db.query(
-    "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
-    [username, email, password]
+    "INSERT INTO users (name, username, email, password_hash) VALUES (?, ?, ?, ?)",
+    [name, username, email, password]
   );
   return result.insertId as number;
 }
