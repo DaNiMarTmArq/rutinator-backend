@@ -26,6 +26,7 @@ export async function getInterestByName(
     "SELECT * FROM interests WHERE interest_name = ?",
     [interestName]
   );
+
   const result = (rows as Interest[])[0];
   return result || null;
 }

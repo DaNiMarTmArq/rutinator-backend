@@ -32,3 +32,9 @@ export class TokenCreationError extends AppError {
     super("Failed to create token", HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
+
+export class InterestNotFoundError extends AppError {
+  constructor() {
+    super("Interest not found", HttpStatus.NOT_FOUND);
+  }
+}
