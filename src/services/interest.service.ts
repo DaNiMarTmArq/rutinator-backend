@@ -3,19 +3,33 @@ import {
   createInterest,
   getInterestByName,
 } from "../models/interest.model";
-import { InterestDetails } from "../models/interfaces/interest.interfaces";
+import {
+  Interest,
+  InterestDetails,
+} from "../models/interfaces/interest.interfaces";
 
 export async function addInterest(
   interestDetails: InterestDetails
-): Promise<number> {
+): Promise<Interest> {
   const { userId, interestName } = interestDetails;
 
-  let interest = await getInterestByName(interestName);
+  const interestUpper = capitalizeWords(interestName);
+  console.log(interestUpper);
+
+  let interest = await getInterestByName(interestUpper);
   if (!interest) {
-    const interestId = await createInterest(interestName);
-    interest = { id: interestId, interest_name: interestName };
+    const interestId = await createInterest(interestUpper);
+    interest = { id: interestId, interest_name: interestUpper };
   }
 
   const insertId = await addInterestToUser(interest.id, userId);
-  return insertId;
+  return interest;
+}
+
+function capitalizeWords(str: string) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
