@@ -53,7 +53,7 @@ export async function addInterestToUser(
 }
 
 export async function getAllInterestsByUser(
-  userId: number
+  userId: string
 ): Promise<Interest[]> {
   const [rows] = await db.query(
     "SELECT i.* FROM interests i JOIN users_interests ui ON ui.interests_id = i.id WHERE ui.users_id = ?;",

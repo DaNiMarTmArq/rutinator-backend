@@ -14,3 +14,8 @@ export async function addInterest(req: Request, res: Response) {
     interest,
   });
 }
+
+export async function getInterestsByUserId(req: Request, res: Response) {
+  const interests = await interestService.getByUserId(req.params.userid);
+  res.status(HttpStatus.OK).json(interests);
+}
