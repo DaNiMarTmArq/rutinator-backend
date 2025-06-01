@@ -15,6 +15,12 @@ export class UserAlreadyExistsError extends AppError {
   }
 }
 
+export class UserNotFoundError extends AppError {
+  constructor() {
+    super("User not found", HttpStatus.NOT_FOUND);
+  }
+}
+
 export class InvalidUserCredentials extends AppError {
   constructor() {
     super("Invalid email or password", HttpStatus.UNAUTHORIZED);
@@ -24,5 +30,11 @@ export class InvalidUserCredentials extends AppError {
 export class TokenCreationError extends AppError {
   constructor() {
     super("Failed to create token", HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
+export class InterestNotFoundError extends AppError {
+  constructor() {
+    super("Interest not found", HttpStatus.NOT_FOUND);
   }
 }
