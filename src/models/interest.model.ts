@@ -32,7 +32,7 @@ export async function getInterestByName(
 
 export async function addInterestToUser(
   interestId: number,
-  userId: number
+  userId: string
 ): Promise<number> {
   try {
     const [result]: any = await db.query(
@@ -43,12 +43,10 @@ export async function addInterestToUser(
   } catch (error: any) {
     if (error.code === "ER_NO_REFERENCED_ROW_2") {
       throw new Error(
-        `Foreign key constraint failed: either user ID ${userId} or interest ID ${interestId} does not exist.`
+        `Foreign key constraint failed: either user ID or interest does not exist.`
       );
     } else if (error.code === "ER_DUP_ENTRY") {
-      throw new Error(
-        `User ${userId} is already linked to interest ${interestId}.`
-      );
+      throw new Error(`User is already linked to that interest.`);
     }
     throw error;
   }

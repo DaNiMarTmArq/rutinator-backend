@@ -1,8 +1,16 @@
 import { Request, Response } from "express";
 import * as interestService from "../services/interest.service";
 import { HttpStatus } from "../errors/http.errors";
+import { InterestDetails } from "../models/interfaces/interest.interfaces";
 
 export async function addInterest(req: Request, res: Response) {
-  const result = await interestService.addInterest(req.body);
-  res.status(HttpStatus.CREATED).json(result);
+  const interestDetails: InterestDetails = {
+    userId: req.params.userid,
+    interestName: req.body.interestName,
+  };
+  const interest = await interestService.addInterest(interestDetails);
+  res.status(HttpStatus.CREATED).json({
+    success: true,
+    interest,
+  });
 }

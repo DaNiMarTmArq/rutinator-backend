@@ -4,6 +4,6 @@ export interface Interest {
 }
 
 export interface InterestDetails {
-  userId: number;
+  userId: string;
   interestName: string;
 }
