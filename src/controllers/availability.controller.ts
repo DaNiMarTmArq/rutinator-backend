@@ -1,13 +1,29 @@
 import { Request, Response } from "express";
-import { getSchedulesByUser } from "../services/availability.service";
+import {
+  addAvailabilityForUser,
+  getSchedulesByUser,
+} from "../services/availability.service";
 import { HttpStatus } from "../errors/http.errors";
+import { CreateAvailabilityRequest } from "../models/interfaces/availability.interfaces";
 
-export async function getSchedulesByUserId(
-  request: Request,
-  response: Response
-) {
-  const { userId } = request.params;
+export async function getSchedulesByUserId(req: Request, res: Response) {
+  const { userId } = req.params;
 
   const schedules = await getSchedulesByUser(userId);
-  response.status(HttpStatus.OK).json(schedules);
+  res.status(HttpStatus.OK).json(schedules);
+}
+
+export async function createAvailability(req: Request, res: Response) {
+  const { weekday, start_time, end_time } = req.body;
+  const { userId } = req.params;
+
+  const data: CreateAvailabilityRequest = {
+    weekday,
+    start_time,
+    end_time,
+    user_id: parseInt(userId),
+  };
+
+  const newId = await addAvailabilityForUser(data);
+  res.status(HttpStatus.CREATED).json({ id: newId });
 }

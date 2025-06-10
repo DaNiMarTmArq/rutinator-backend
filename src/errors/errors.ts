@@ -38,3 +38,9 @@ export class InterestNotFoundError extends AppError {
     super("Interest not found", HttpStatus.NOT_FOUND);
   }
 }
+
+export class AvailabilityError extends AppError {
+  constructor() {
+    super("Availability already exists for this slot.", HttpStatus.BAD_REQUEST);
+  }
+}
