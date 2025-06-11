@@ -19,7 +19,7 @@ export async function getByUsername(req: Request, res: Response) {
 }
 
 export async function updateByUsername(req: Request, res: Response) {
-  const {username} = req.params;
+  const { username } = req.params;
   const userData = req.body;
 
   const result = await userService.updateByUsername(username, userData);
@@ -30,7 +30,9 @@ export async function updateImageByUsername(req: Request, res: Response) {
   const { username } = req.params;
   const image = req.file;
   if (!image) {
-    res.status(HttpStatus.BAD_REQUEST).json({ error: "Image file is required" });
+    res
+      .status(HttpStatus.BAD_REQUEST)
+      .json({ error: "Image file is required" });
     return;
   }
   const result = await userService.updateImageByUsername(username, image);
