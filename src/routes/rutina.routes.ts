@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {
   addRutina
-} from "../controllers/rutinas.controller";
+} from "../controllers/rutina.controller";
 
 const router = Router();
 
-router.post("/add", (req, res) => addRutina(req, res));
-
+//router.post("/", (req, res) => addRutina(req, res));
+router.post("/", addRutina);
 export default router;
