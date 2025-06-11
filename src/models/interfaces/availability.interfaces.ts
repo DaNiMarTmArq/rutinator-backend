@@ -11,3 +11,10 @@ export interface CreateAvailabilityRequest {
   start_time: string; // format: 'HH:MM:SS'
   end_time: string; // format: 'HH:MM:SS'
 }
+
+export interface UpdateAvailabilityRequest {
+  user_id: number;
+  weekday?: number;
+  start_time?: string; // format: 'HH:MM:SS'
+  end_time?: string; // format: 'HH:MM:SS'
+}

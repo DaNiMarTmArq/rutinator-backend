@@ -41,3 +41,37 @@ export async function createAvailability(
 
   return result.insertId as number;
 }
+
+export async function existsAvailabilityById(
+  availabilityId: number,
+  userId: number
+): Promise<boolean> {
+  const [rows] = await db.query(
+    `SELECT 1 FROM users_availability
+     WHERE id = ? AND users_id = ?
+     LIMIT 1`,
+    [availabilityId, userId]
+  );
+  return (rows as any[]).length > 0;
+}
+
+export async function updateAvailabilityById(
+  availabilityId: number,
+  updates: Partial<Omit<UserAvailability, "id">>
+): Promise<void> {
+  const fields = Object.entries(updates).filter(
+    ([_, value]) => value !== undefined
+  );
+
+  if (fields.length === 0) {
+    throw new Error("No fields provided to update");
+  }
+
+  const setClause = fields.map(([key]) => `${key} = ?`).join(", ");
+  const values = fields.map(([_, value]) => value);
+
+  await db.query(`UPDATE users_availability SET ${setClause} WHERE id = ?`, [
+    ...values,
+    availabilityId,
+  ]);
+}

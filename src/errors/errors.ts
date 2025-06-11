@@ -44,3 +44,9 @@ export class AvailabilityError extends AppError {
     super("Availability already exists for this slot.", HttpStatus.BAD_REQUEST);
   }
 }
+
+export class AvailabilityNotFoundError extends AppError {
+  constructor() {
+    super("Availability not found", HttpStatus.NOT_FOUND);
+  }
+}
