@@ -1,5 +1,5 @@
 import { db } from "../db/db";
-import { User, UserRegisterRequest } from "./interfaces/user.interfaces";
+import { User, UserRegisterRequest, UserUpdate } from "./interfaces/user.interfaces";
 
 export async function findAll(): Promise<User[]> {
   const [rows] = await db.query("SELECT * FROM users");
@@ -39,3 +39,26 @@ export async function createUser(user: UserRegisterRequest): Promise<number> {
   );
   return result.insertId as number;
 }
+
+
+export async function updateUser(
+  oldUsername: string,
+  user: Partial<UserUpdate>
+): Promise<void> {
+  const { name, email, username, password } = user;
+  await db.query(
+    "UPDATE users SET name = ?, email = ?, username = ?, password_hash = ? WHERE username = ?",
+    [name, email, username, password, oldUsername]
+  );
+}
+
+export async function updateImage(
+  username: string,
+  image: Express.Multer.File
+): Promise<void> {
+  await db.query(
+    "UPDATE users SET image = ? WHERE username = ?",
+    [image.buffer, username]
+  );
+}
+
