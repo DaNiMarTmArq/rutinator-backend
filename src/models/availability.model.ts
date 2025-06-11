@@ -75,3 +75,9 @@ export async function updateAvailabilityById(
     availabilityId,
   ]);
 }
+
+export async function deleteAvailabilityById(availabilityId: number) {
+  await db.query("DELETE FROM users_availability WHERE id = ?", [
+    availabilityId,
+  ]);
+}

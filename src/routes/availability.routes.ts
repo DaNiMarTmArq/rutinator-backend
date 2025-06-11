@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createAvailability,
+  deleteAvailability,
   getSchedulesByUserId,
   updateAvailability,
 } from "../controllers/availability.controller";
@@ -22,6 +23,9 @@ router.patch(
   "/:userId/:avalabilityId/update",
   validateRequest(UpdateAvailabilityRequestSchema),
   (req, res) => updateAvailability(req, res)
+);
+router.delete("/:userId/:avalabilityId/delete", (req, res) =>
+  deleteAvailability(req, res)
 );
 
 export default router;

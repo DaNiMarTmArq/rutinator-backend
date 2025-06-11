@@ -40,6 +40,22 @@ export async function updateAvailability(req: Request, res: Response) {
     parseInt(avalabilityId),
     updateRequest
   );
-  res.status(HttpStatus.OK).send();
+  res.status(HttpStatus.OK).send({
+    success: true,
+  });
+  return;
+}
+
+export async function deleteAvailability(req: Request, res: Response) {
+  const { userId, avalabilityId } = req.params;
+
+  await availabilityService.deleteById(
+    parseInt(userId),
+    parseInt(avalabilityId)
+  );
+
+  res.status(HttpStatus.OK).send({
+    success: true,
+  });
   return;
 }

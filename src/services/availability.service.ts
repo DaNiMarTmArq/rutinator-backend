@@ -9,6 +9,7 @@ import {
   existsAvailability,
   existsAvailabilityById,
   updateAvailabilityById,
+  deleteAvailabilityById,
 } from "../models/availability.model";
 import {
   CreateAvailabilityRequest,
@@ -16,25 +17,21 @@ import {
   UserAvailability,
 } from "../models/interfaces/availability.interfaces";
 import { findById } from "../models/user.model";
+import { checkUserExists } from "../utils/checks";
 
 export async function getSchedulesByUser(
   userId: string
 ): Promise<UserAvailability[]> {
-  const user = await findById(parseInt(userId));
-  if (!user) {
-    throw new UserNotFoundError();
-  }
+  const user = parseInt(userId);
+  await checkUserExists(user);
 
-  return await findAllByUserId(user.id);
+  return await findAllByUserId(user);
 }
 
 export async function addAvailabilityForUser(
   data: CreateAvailabilityRequest
 ): Promise<number> {
-  const user = await findById(data.user_id);
-  if (!user) {
-    throw new UserNotFoundError();
-  }
+  await checkUserExists(data.user_id);
 
   const exists = await existsAvailability(
     data.user_id,
@@ -54,15 +51,9 @@ export async function modifyAvailability(
   availabilityId: number,
   updates: UpdateAvailabilityRequest
 ) {
-  const user = await findById(updates.user_id);
-  if (!user) {
-    throw new UserNotFoundError();
-  }
+  if (!(await checkUserExists(updates.user_id))) return;
 
-  const exists = await existsAvailabilityById(availabilityId, updates.user_id);
-  if (!exists) {
-    throw new AvailabilityNotFoundError();
-  }
+  await checkAvailabilityExistsById(availabilityId, updates.user_id);
 
   const updateFields = {
     weekday: updates.weekday,
@@ -80,4 +71,20 @@ export async function modifyAvailability(
   }
 
   await updateAvailabilityById(availabilityId, filteredUpdates);
+}
+
+export async function deleteById(userId: number, availabilityId: number) {
+  if (!(await checkUserExists(userId))) return;
+  await checkAvailabilityExistsById(availabilityId, userId);
+  await deleteAvailabilityById(availabilityId);
+}
+
+async function checkAvailabilityExistsById(
+  availabilityId: number,
+  userId: number
+) {
+  const exists = await existsAvailabilityById(availabilityId, userId);
+  if (!exists) {
+    throw new AvailabilityNotFoundError();
+  }
 }
