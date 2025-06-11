@@ -5,6 +5,7 @@ export interface User {
   username: string;
   password_hash: string;
   created_at: Date;
+  image: string | null;
 }
 
 export interface UserLoginRequest {
@@ -25,4 +26,12 @@ export interface UserAuthenticatedResponse {
   username: string;
   email: string;
   token: string;
+}
+
+export interface UserUpdate {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+  image: Buffer | null;
 }
