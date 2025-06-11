@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
-import {
-  addAvailabilityForUser,
-  getSchedulesByUser,
-  modifyAvailability,
-} from "../services/availability.service";
+import * as availabilityService from "../services/availability.service";
 import { HttpStatus } from "../errors/http.errors";
 import {
   CreateAvailabilityRequest,
@@ -13,7 +9,7 @@ import {
 export async function getSchedulesByUserId(req: Request, res: Response) {
   const { userId } = req.params;
 
-  const schedules = await getSchedulesByUser(userId);
+  const schedules = await availabilityService.getSchedulesByUser(userId);
   res.status(HttpStatus.OK).json(schedules);
 }
 
@@ -28,7 +24,7 @@ export async function createAvailability(req: Request, res: Response) {
     user_id: parseInt(userId),
   };
 
-  const newId = await addAvailabilityForUser(data);
+  const newId = await availabilityService.addAvailabilityForUser(data);
   res.status(HttpStatus.CREATED).json({ id: newId });
 }
 
@@ -40,7 +36,10 @@ export async function updateAvailability(req: Request, res: Response) {
     user_id: userId,
   };
 
-  await modifyAvailability(parseInt(avalabilityId), updateRequest);
+  await availabilityService.modifyAvailability(
+    parseInt(avalabilityId),
+    updateRequest
+  );
   res.status(HttpStatus.OK).send();
   return;
 }
