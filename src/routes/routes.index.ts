@@ -11,9 +11,7 @@ const router = Router();
 router.use("/users", userRoutes);
 router.use("/interests", interestRoutes);
 router.use("/goals", goalsRoutes);
-router.use("/rutinas",rutinaRoutes);
-router.use("/availability", availabilityRoutes);
 router.use("/rutinas", rutinaRoutes);
-
+router.use("/availability", availabilityRoutes);
 
 export default router;
