@@ -23,8 +23,6 @@ import {
 } from "../errors/errors";
 import { HttpStatus } from "../errors/http.errors";
 
-const mime = require("mime-types");
-
 export async function login(
   credentials: UserLoginRequest
 ): Promise<UserAuthenticatedResponse> {
