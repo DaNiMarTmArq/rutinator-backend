@@ -39,6 +39,7 @@ export class InterestNotFoundError extends AppError {
   }
 }
 
+
 export class AvailabilityError extends AppError {
   constructor() {
     super("Availability already exists for this slot.", HttpStatus.BAD_REQUEST);
@@ -48,5 +49,14 @@ export class AvailabilityError extends AppError {
 export class AvailabilityNotFoundError extends AppError {
   constructor() {
     super("Availability not found", HttpStatus.NOT_FOUND);
+
+  }
+}
+
+
+
+export class GoalsNotFoundError extends AppError {
+  constructor() {
+    super("Goal not found", HttpStatus.NOT_FOUND);
   }
 }

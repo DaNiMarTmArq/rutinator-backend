@@ -1,0 +1,7 @@
+GET http://localhost:3000/api/interests/17
+
+###
+GET http://localhost:3000/api/goals/17
+
+###
+http://localhost:3000/api/availability/17
