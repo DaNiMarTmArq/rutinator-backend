@@ -12,17 +12,23 @@ import {
   UserLoginRequestSchema,
   UserRegisterRequestSchema,
 } from "../validators/users.validators";
+import { authenticateToken } from "../middleware/auth.middleware";
 const multer = require("multer");
 const upload = multer();
 
 const router = Router();
 
-router.get("/username/:username", getByUsername);
-
 router.post("/login", validateRequest(UserLoginRequestSchema), login);
 router.post("/register", validateRequest(UserRegisterRequestSchema), register);
 
-router.put("/update/username/:username", updateByUsername);
-router.put("/updateImage/username/:username", upload.single("image"), updateImageByUsername);
+router.get("/username/:username", authenticateToken, getByUsername);
+
+router.put("/update/username/:username", authenticateToken, updateByUsername);
+router.put(
+  "/updateImage/username/:username",
+  authenticateToken,
+  upload.single("image"),
+  updateImageByUsername
+);
 
 export default router;
