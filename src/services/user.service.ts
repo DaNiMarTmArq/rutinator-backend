@@ -1,15 +1,19 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
+  User,
   UserAuthenticatedResponse,
   UserLoginRequest,
   UserRegisterRequest,
+  UserUpdate,
 } from "../models/interfaces/user.interfaces";
 import {
   createUser,
   findByEmailOrUsername,
   findById,
   findByName,
+  updateImage,
+  updateUser,
 } from "../models/user.model";
 import {
   AppError,
@@ -37,7 +41,7 @@ export async function login(
     throw new InvalidUserCredentials();
   }
 
-  const token = createToken({ userName: user.name, email: user.email });
+  const token = createToken({ userName: user.username, email: user.email });
 
   return {
     id: user.id,
@@ -73,7 +77,7 @@ export async function register(
     );
 
   const token = createToken({
-    userName: savedUser.name,
+    userName: savedUser.username,
     email: savedUser.email,
   });
 
@@ -89,6 +93,74 @@ export async function register(
 interface UserDetails {
   userName: string;
   email: string;
+}
+
+export async function getByUsername(username: string): Promise<any> {
+  const user = await findByName(username);
+
+  if (!user) {
+    throw new InvalidUserCredentials();
+  }
+
+  const base64Image = user.image
+    ? Buffer.from(user.image).toString("base64")
+    : null;
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    username: user.username,
+    created_at: user.created_at,
+    image: base64Image,
+  };
+}
+
+export async function updateByUsername(
+  username: string,
+  user: UserUpdate
+): Promise<User> {
+  if (user.password === "") {
+    const oldUser = await findByName(username);
+    console.log("Old User", oldUser);
+    if (!oldUser) {
+      throw new AppError(
+        "Error while updating the user",
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+    user.password = oldUser.password_hash;
+  } else {
+    user.password = await bcrypt.hash(user.password, 10);
+  }
+
+  const insertId = await updateUser(username, user);
+
+  const updatedUser = await getByUsername(user.username);
+  if (!updatedUser) {
+    throw new AppError(
+      "Error while updating the user",
+      HttpStatus.INTERNAL_SERVER_ERROR
+    );
+  }
+
+  return updatedUser;
+}
+
+export async function updateImageByUsername(
+  username: string,
+  image: Express.Multer.File
+): Promise<User> {
+  const user = await findByName(username);
+
+  if (!user) {
+    throw new Error("Usuario no encontrado");
+  }
+
+  const result = await updateImage(username, image);
+
+  const updated = await getByUsername(username);
+  return updated;
 }
 
 function createToken(userDetails: UserDetails) {
