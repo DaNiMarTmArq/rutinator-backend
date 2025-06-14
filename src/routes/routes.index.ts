@@ -5,13 +5,16 @@ import interestRoutes from "./interest.routes";
 import rutinaRoutes from "./rutina.routes";
 import goalsRoutes from "./goals.routes";
 import availabilityRoutes from "./availability.routes";
+import { authenticateToken } from "../middleware/auth.middleware";
+import activitiesRoutes from "./activities.routes";
 
 const router = Router();
 
 router.use("/users", userRoutes);
-router.use("/interests", interestRoutes);
-router.use("/goals", goalsRoutes);
-router.use("/rutinas", rutinaRoutes);
-router.use("/availability", availabilityRoutes);
+router.use("/interests", authenticateToken, interestRoutes);
+router.use("/goals", authenticateToken, goalsRoutes);
+router.use("/rutinas", authenticateToken, rutinaRoutes);
+router.use("/availability", authenticateToken, availabilityRoutes);
+router.use("/activities", authenticateToken, activitiesRoutes);
 
 export default router;

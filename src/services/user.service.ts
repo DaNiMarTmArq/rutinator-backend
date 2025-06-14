@@ -13,7 +13,7 @@ import {
   findById,
   findByName,
   updateImage,
-  updateUser
+  updateUser,
 } from "../models/user.model";
 import {
   AppError,
@@ -22,8 +22,6 @@ import {
   UserAlreadyExistsError,
 } from "../errors/errors";
 import { HttpStatus } from "../errors/http.errors";
-
-const mime = require("mime-types");
 
 export async function login(
   credentials: UserLoginRequest
@@ -53,8 +51,6 @@ export async function login(
     token,
   };
 }
-
-
 
 export async function register(
   newUser: UserRegisterRequest
@@ -99,7 +95,7 @@ interface UserDetails {
   email: string;
 }
 
-export async function getByUsername(username: string): Promise<User> {
+export async function getByUsername(username: string): Promise<any> {
   const user = await findByName(username);
 
   if (!user) {
@@ -115,18 +111,16 @@ export async function getByUsername(username: string): Promise<User> {
     name: user.name,
     email: user.email,
     username: user.username,
-    password_hash: user.password_hash,
     created_at: user.created_at,
-    image: base64Image
+    image: base64Image,
   };
 }
 
 export async function updateByUsername(
   username: string,
-  user: UserUpdate,
+  user: UserUpdate
 ): Promise<User> {
-
-  if (user.password === '' ) {
+  if (user.password === "") {
     const oldUser = await findByName(username);
     console.log("Old User", oldUser);
     if (!oldUser) {
@@ -139,7 +133,6 @@ export async function updateByUsername(
   } else {
     user.password = await bcrypt.hash(user.password, 10);
   }
-
 
   const insertId = await updateUser(username, user);
 
@@ -169,7 +162,6 @@ export async function updateImageByUsername(
   const updated = await getByUsername(username);
   return updated;
 }
-
 
 function createToken(userDetails: UserDetails) {
   const JWT_SECRET = process.env.JWT_SECRET;
