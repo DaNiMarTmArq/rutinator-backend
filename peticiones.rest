@@ -1,3 +1,10 @@
+@token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJpYXQiOjE3NDk5NzUyOTMsImV4cCI6MTc1MDA2MTY5M30.9DbK3QwF_htm9TjLo-4o-aFq9lbOAZ8qfpXo2pvflQM"
+
+GET http://localhost:3000/api/interests/17
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJpZCI6MTAsImlhdCI6MTc0OTk4MDIwNywiZXhwIjoxNzUwMDY2NjA3fQ.5C6dA0uqhBXsIT25rhxWAL8P6agCOKi5B6oPMYiqxvQ
+
+###
 GET http://localhost:3000/api/interests/17
 
 ###
@@ -5,3 +12,11 @@ GET http://localhost:3000/api/goals/17
 
 ###
 http://localhost:3000/api/availability/17
+
+###
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+{
+    "username": "test",
+    "password": "Test123"
+}

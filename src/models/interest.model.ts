@@ -57,7 +57,7 @@ export async function getAllInterestsByUser(
   userId: string
 ): Promise<Interest[]> {
   const [rows] = await db.query(
-    "SELECT i.* FROM interests i JOIN users_interests ui ON ui.interests_id = i.id WHERE ui.users_id = ?;",
+    "SELECT i.*, ui.color FROM interests i JOIN users_interests ui ON ui.interests_id = i.id WHERE ui.users_id = ?;",
     [userId]
   );
   return rows as Interest[];

@@ -8,7 +8,7 @@ export async function findAllByUserId(
   userId: number
 ): Promise<UserAvailability[]> {
   const [rows] = await db.query(
-    "SELECT * FROM users_availability WHERE users_id = ?",
+    "SELECT * FROM users_availability WHERE users_id = ? ORDER BY weekday ASC, start_time ASC",
     [userId]
   );
   return rows as UserAvailability[];
