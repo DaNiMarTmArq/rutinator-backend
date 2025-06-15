@@ -3,6 +3,10 @@ import {
   insertar
 } from "../models/rutina.model";
 
+import {
+  findByName
+} from "../models/user.model";
+
 
 //users_id:number, descripcion:string, nombre:string, defecto:boolean, shared:boolean,frequent:boolean
 export async function añadirRutina(rutina:any): Promise<number> {
@@ -14,7 +18,11 @@ export async function añadirRutina(rutina:any): Promise<number> {
     shared = false,
     frequent = false
   } = rutina;
-  console.log("el valor de usuario es:",name);
-  const result= await insertar(usuario,descripcion,name,defecto,shared,frequent);
+
+  const result=0;
+  const usu = await findByName(usuario);
+  if (usu){
+    const result= await insertar(usu.id,descripcion,name,defecto,shared,frequent);
+ }
   return result;
 }
