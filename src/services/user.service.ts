@@ -41,7 +41,7 @@ export async function login(
     throw new InvalidUserCredentials();
   }
 
-  const token = createToken({ userName: user.username, email: user.email });
+  const token = createToken({ userName: user.username, email: user.email, id: user.id });
 
   return {
     id: user.id,
@@ -79,6 +79,7 @@ export async function register(
   const token = createToken({
     userName: savedUser.username,
     email: savedUser.email,
+    id: savedUser.id
   });
 
   return {
@@ -93,6 +94,7 @@ export async function register(
 interface UserDetails {
   userName: string;
   email: string;
+  id: number;
 }
 
 export async function getByUsername(username: string): Promise<any> {
