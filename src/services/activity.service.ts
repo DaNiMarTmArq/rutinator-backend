@@ -7,20 +7,29 @@ import {
 import {
   createActivity,
   deleteActivityById,
-  findActivitiesByRoutineVersion,
   findActivityById,
+  findActivityByUserNameId,
+  findActivitiesByRoutineVersion,
   updateActivityById,
 } from "../models/activity.model";
 
 import { AppError } from "../errors/errors";
 import { HttpStatus } from "../errors/http.errors";
 
+//
+export async function getActivitiesByUserId(userId: number): Promise<Activity[]> {
+  const activity = await findActivityByUserNameId(userId);
+  if (!activity) {
+    throw new AppError("Actividades no encontradas por id_usuario", HttpStatus.NOT_FOUND);
+  }
+  return activity;
+}
+//
 export async function getActivitiesByRoutineVersionId(
   routineVersionId: number
 ): Promise<Activity[]> {
   return await findActivitiesByRoutineVersion(routineVersionId);
 }
-
 export async function getActivityById(id: number): Promise<Activity> {
   const activity = await findActivityById(id);
   if (!activity) {

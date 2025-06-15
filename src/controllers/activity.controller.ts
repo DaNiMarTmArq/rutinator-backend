@@ -5,7 +5,21 @@ import {
   CreateActivityRequest,
   UpdateActivityRequest,
 } from "../models/interfaces/activity.interfaces";
+//
 
+export async function getActivitiesByUserId(
+  req: Request,
+  res: Response
+){
+  const {idUserName } = req.params;
+
+  const activities = await activityService.getActivitiesByUserId(
+    parseInt(idUserName)
+  );
+
+  res.status(HttpStatus.OK).json(activities);
+}
+//
 export async function getActivitiesByRoutineVersion(
   req: Request,
   res: Response

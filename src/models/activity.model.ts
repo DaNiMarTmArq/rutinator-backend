@@ -5,6 +5,27 @@ import {
   UpdateActivityRequest,
 } from "./interfaces/activity.interfaces";
 
+export async function findActivityByUserNameId(id: number): Promise<Activity[]|null> {
+  const [rows] = await db.query(
+    `SELECT a.id,
+	          a.title,
+	          a.description,
+            a.day_of_week,
+            a.start_time,
+	          a.end_time,
+            rv.version_number,
+            r.name AS routine_name
+    FROM activities a
+    JOIN routines_versions rv ON a.routines_versions_id = rv.id
+    JOIN routines r ON rv.routines_id = r.id
+    WHERE r.users_id = ?;`,
+    [id]
+  );
+  const results = rows as Activity[];
+  return results.length ? results : null;
+}
+
+
 export async function findActivitiesByRoutineVersion(
   routineVersionId: number
 ): Promise<Activity[]> {
@@ -14,6 +35,7 @@ export async function findActivitiesByRoutineVersion(
   );
   return rows as Activity[];
 }
+// Parte Dani
 
 export async function findActivityById(id: number): Promise<Activity | null> {
   const [rows] = await db.query(
@@ -23,7 +45,6 @@ export async function findActivityById(id: number): Promise<Activity | null> {
   const results = rows as Activity[];
   return results.length ? results[0] : null;
 }
-
 export async function createActivity(
   data: CreateActivityRequest
 ): Promise<number> {
