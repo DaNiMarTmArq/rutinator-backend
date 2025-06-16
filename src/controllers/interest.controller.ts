@@ -8,6 +8,7 @@ export async function addInterest(req: Request, res: Response) {
   const interestDetails: InterestDetails = {
     userId: req.params.userId,
     interestName: req.body.interestName,
+    color: req.body.color
   };
   const interest = await interestService.addInterest(interestDetails);
   res.status(HttpStatus.CREATED).json({

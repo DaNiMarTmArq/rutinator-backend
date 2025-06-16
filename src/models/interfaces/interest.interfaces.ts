@@ -7,4 +7,5 @@ export interface Interest {
 export interface InterestDetails {
   userId: string;
   interestName: string;
+  color:string;
 }
