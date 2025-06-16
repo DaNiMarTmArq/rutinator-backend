@@ -7,15 +7,10 @@ import {
 } from "../models/interfaces/activity.interfaces";
 //
 
-export async function getActivitiesByUserId(
-  req: Request,
-  res: Response
-){
-  const {idUserName } = req.params;
+export async function getActivitiesByUserId(req: Request, res: Response) {
+  const { idusername } = req.params;
 
-  const activities = await activityService.getActivitiesByUserId(
-    parseInt(idUserName)
-  );
+  const activities = await activityService.getActivitiesByUserId(parseInt(idusername));
 
   res.status(HttpStatus.OK).json(activities);
 }

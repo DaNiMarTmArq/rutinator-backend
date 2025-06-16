@@ -5,24 +5,23 @@ import {
   UpdateActivityRequest,
 } from "./interfaces/activity.interfaces";
 
-export async function findActivityByUserNameId(id: number): Promise<Activity[]|null> {
-  const [rows] = await db.query(
+export async function findActivityByUserNameId(id: number): Promise<Activity[]> {
+  const [rows] = await db.query<Activity[]>(
     `SELECT a.id,
-	          a.title,
-	          a.description,
-            a.day_of_week,
-            a.start_time,
-	          a.end_time,
-            rv.version_number,
-            r.name AS routine_name
+       a.routines_versions_id,
+       a.activity_categories_id,
+       a.title,
+       a.description,
+       a.day_of_week,
+       a.start_time,
+       a.end_time
     FROM activities a
     JOIN routines_versions rv ON a.routines_versions_id = rv.id
     JOIN routines r ON rv.routines_id = r.id
     WHERE r.users_id = ?;`,
-    [id]
+    [id] 
   );
-  const results = rows as Activity[];
-  return results.length ? results : null;
+  return rows;
 }
 
 
