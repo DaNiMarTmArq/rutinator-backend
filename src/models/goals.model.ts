@@ -40,7 +40,7 @@ export async function addGoalsToUser(
 ): Promise<number> {
   try {
     const [result]: any = await db.query(
-      "INSERT INTO users_goals (users_id, interests_id, title, description, hours_per_week) VALUES (?, ?, ?, ?, ?);",
+      "INSERT INTO users_goals (users_id, interests_id, goals_name, description, hours_per_week) VALUES (?, ?, ?, ?, ?);",
       [userId, interestsId, 'TITULO', 'DESCRIPCION', 33]
     );
     return result.insertId as number;
@@ -73,7 +73,7 @@ export async function userHasGoals(
   goalsId: number
 ): Promise<boolean> {
   const [rows] = await db.query(
-    "SELECT 1 FROM users_goals WHERE users_id = ? AND goals_id = ? LIMIT 1",
+    "SELECT 1 FROM users_goals WHERE users_id = ? AND id = ? LIMIT 1",
     [userId, goalsId]
   );
   return (rows as any[]).length > 0;
@@ -84,7 +84,7 @@ export async function removeGoalsFromUser(
   goalsId: number
 ): Promise<void> {
   await db.query(
-    "DELETE FROM users_goals WHERE users_id = ? AND goals_id = ?",
+    "DELETE FROM users_goals WHERE users_id = ? AND id = ?",
     [userId, goalsId]
   );
 }

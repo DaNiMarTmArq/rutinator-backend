@@ -15,3 +15,9 @@ export async function removeGoalsFromUser(req: Request, res: Response) {
   await goalsService.deleteGoalsFromUser(userId, goalsNameUpper);
   res.status(HttpStatus.NO_CONTENT).send();
 }
+
+export async function removeGoalsById(req: Request, res: Response) {
+  const { userId, goalId } = req.params;
+  await goalsService.deleteGoalsById(userId, goalId);
+  res.status(HttpStatus.NO_CONTENT).send();
+}
