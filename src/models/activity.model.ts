@@ -6,7 +6,7 @@ import {
 } from "./interfaces/activity.interfaces";
 
 export async function findActivityByUserNameId(id: number): Promise<Activity[]> {
-  const [rows] = await db.query<Activity[]>(
+  const [rows] = await db.query(
     `SELECT a.id,
        a.routines_versions_id,
        a.activity_categories_id,
@@ -21,7 +21,7 @@ export async function findActivityByUserNameId(id: number): Promise<Activity[]> 
     WHERE r.users_id = ?;`,
     [id] 
   );
-  return rows;
+  return rows as Activity[];
 }
 
 

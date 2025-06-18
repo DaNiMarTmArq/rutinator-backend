@@ -11,12 +11,19 @@ export async function getActivitiesByUserId(req: Request, res: Response) {
   try {
     const { idusername } = req.params;
     const activities = await activityService.getActivitiesByUserId(parseInt(idusername));
-    res.status(HttpStatus.OK).json(activities);
+
+    // Si no hay actividades, devuelve un array vacío
+    if (!activities || activities.length === 0) {
+      return res.status(HttpStatus.OK).json([]);
+    }
+
+    return res.status(HttpStatus.OK).json(activities);
   } catch (error) {
     console.error('Error fetching activities:', error);
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error retrieving activities' });
   }
 }
+
 
 //
 export async function getActivitiesByRoutineVersion(

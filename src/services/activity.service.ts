@@ -13,13 +13,18 @@ import {
   updateActivityById,
 } from "../models/activity.model";
 
-import { AppError } from "../errors/errors";
+import { AppError, UserNotFoundError } from "../errors/errors";
 import { HttpStatus } from "../errors/http.errors";
 
 //
 export async function getActivitiesByUserId(userId: number): Promise<Activity[]> {
-  const activities = await findActivityByUserNameId(userId);
-  return activities ?? []; 
+const activities = await findActivityByUserNameId(userId);
+
+  if (activities === null || activities === undefined) {
+
+    throw new UserNotFoundError();
+  }
+  return activities;
 }
 //
 export async function getActivitiesByRoutineVersionId(
