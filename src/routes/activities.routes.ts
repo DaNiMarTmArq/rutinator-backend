@@ -15,7 +15,9 @@ import {
 
 const router = Router();
 
-router.get("/activitybyuser/:idusername", (req, res) => getActivitiesByUserId(req,res));
+router.get("/activitybyuser/:idusername", (req, res, next) => {
+  getActivitiesByUserId(req, res).catch(next);
+});
 
 
 router.get("/routine/:routineVersionId", (req, res) =>

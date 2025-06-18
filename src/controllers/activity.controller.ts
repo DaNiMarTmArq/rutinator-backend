@@ -12,6 +12,10 @@ export async function getActivitiesByUserId(req: Request, res: Response) {
 
   const activities = await activityService.getActivitiesByUserId(parseInt(idusername));
 
+ if (!activities || activities.length === 0) {
+    return res.status(HttpStatus.OK).json([]);
+  }
+
   res.status(HttpStatus.OK).json(activities);
 }
 //
