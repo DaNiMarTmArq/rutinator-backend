@@ -8,16 +8,16 @@ import {
 //
 
 export async function getActivitiesByUserId(req: Request, res: Response) {
-  const { idusername } = req.params;
-
-  const activities = await activityService.getActivitiesByUserId(parseInt(idusername));
-
- if (!activities || activities.length === 0) {
-    return res.status(HttpStatus.OK).json([]);
+  try {
+    const { idusername } = req.params;
+    const activities = await activityService.getActivitiesByUserId(parseInt(idusername));
+    res.status(HttpStatus.OK).json(activities);
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error retrieving activities' });
   }
-
-  res.status(HttpStatus.OK).json(activities);
 }
+
 //
 export async function getActivitiesByRoutineVersion(
   req: Request,

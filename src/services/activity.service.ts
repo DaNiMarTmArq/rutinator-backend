@@ -19,10 +19,7 @@ import { HttpStatus } from "../errors/http.errors";
 //
 export async function getActivitiesByUserId(userId: number): Promise<Activity[]> {
   const activities = await findActivityByUserNameId(userId);
-  if (activities.length === 0) {
-    throw new AppError("Actividades no encontradas por id_usuario", HttpStatus.NOT_FOUND);
-  }
-  return activities;
+  return activities ?? []; 
 }
 //
 export async function getActivitiesByRoutineVersionId(
