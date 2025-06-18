@@ -2,6 +2,7 @@ import * as rutinaModel from "../models/rutina.model";
 import {insertar,modificar} from "../models/rutina.model";
 import {findByName} from "../models/user.model";
 import {insertarVersion,comprobarVersion} from "../models/rutinaVersion.model";
+import { db } from '../db/db';
 
 export async function añadirRutina(rutina:any): Promise<number> {
   const {
@@ -49,4 +50,14 @@ export async function modificarRutina(rutina:any):Promise<number>{
       }
  }
   return idRutVersion;
+}
+
+export async function getRutinasByUser(userId: number) {
+  const [rows] = await db.query(
+  `SELECT r.id, r.name, r.description, r.created_at
+   FROM routines r
+   WHERE r.users_id = ?`,
+  [userId]
+);
+  return rows;
 }
