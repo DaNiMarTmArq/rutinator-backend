@@ -1,5 +1,5 @@
 import * as rutinaModel from "../models/rutina.model";
-import {insertar,modificar} from "../models/rutina.model";
+import {insertar,modificar,obtenerTarea} from "../models/rutina.model";
 import {findByName} from "../models/user.model";
 import {insertarVersion,comprobarVersion} from "../models/rutinaVersion.model";
 import { db } from '../db/db';
@@ -19,7 +19,7 @@ export async function añadirRutina(rutina:any): Promise<number> {
   const is_Selected = false;
   //const usu = await findByName(usuario);
   //if (usu){
-  console.log("va a insertar");
+  
     const idRutina= await insertar(usuario,descripcion,name,defecto,shared,frequent);
     if (idRutina)
       idRutVersion= await insertarVersion(idRutina,version,is_Selected);
@@ -29,27 +29,24 @@ export async function añadirRutina(rutina:any): Promise<number> {
 
 export async function modificarRutina(rutina:any):Promise<number>{
   const {
-    usuario,
     descripcion,
     name,
     defecto,
     shared = false,
     frequent = false,
-    id_rutina
+    id
   } = rutina;
 
   let idRutVersion=0;
-  //let version:number = 1;
   const is_Selected = false;
-  const usu = await findByName(usuario);
-  if (usu){
-    const idRutina= await modificar(usu.id,id_rutina,descripcion,name,defecto,shared,frequent);
-    if (idRutina){
-      let version = await comprobarVersion(idRutina);
+    const cambiado= await modificar(id,descripcion,name,defecto,shared,frequent);
+    console.log("CAmbiado:",cambiado);
+    if (cambiado>0){
+      let version = await comprobarVersion(id);
+      console.log("La version es:",version);
       version++;
-      idRutVersion= await insertarVersion(idRutina,version,is_Selected);
+      idRutVersion= await insertarVersion(id,version,is_Selected);
       }
- }
   return idRutVersion;
 }
 
@@ -61,4 +58,9 @@ export async function getRutinasByUser(userId: number) {
   [userId]
 );
   return rows;
+}
+
+export async function getRutinasById(id: number) {
+  const rutina = obtenerTarea(id);
+  return rutina;
 }

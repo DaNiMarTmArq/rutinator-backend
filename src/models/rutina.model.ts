@@ -7,13 +7,20 @@ export async function insertar(users_id:number, descripcion:string, nombre:strin
   return result.insertId as number; 
 }
 
-export async function modificar(users_id:number, id_rutinas:number,descripcion:string, nombre:string, defecto:boolean, shared:boolean,frequent:boolean): Promise<number> {
+export async function modificar(id_rutinas:number,descripcion:string, nombre:string, defecto:boolean, shared:boolean,frequent:boolean): Promise<number> {
   const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const defec = defecto ? 1 : 0;
   const [result]:any = await db.query( `UPDATE routines
-     SET nombre = ?, descripcion = ?, created_at = ? 
-     WHERE id_rutina = ?`,
+     SET name = ?, description = ?, created_at = ? 
+     WHERE id = ?`,
     [nombre, descripcion, fechaActual,id_rutinas]);
-
-  return result.insertId as number; 
+console.log("result",result);
+  return result.changedRows as number; 
 }
+
+export async function obtenerTarea(id:number):Promise<any>{
+  const [rows]:any = await db.query(`SELECT r.id, r.name, r.description, r.created_at FROM routines r WHERE r.id = ?`,[id]);
+  return rows;
+}
+
+  
