@@ -17,12 +17,13 @@ export async function añadirRutina(rutina:any): Promise<number> {
   let idRutVersion=0;
   const version = 1;
   const is_Selected = false;
-  const usu = await findByName(usuario);
-  if (usu){
-    const idRutina= await insertar(usu.id,descripcion,name,defecto,shared,frequent);
+  //const usu = await findByName(usuario);
+  //if (usu){
+  console.log("va a insertar");
+    const idRutina= await insertar(usuario,descripcion,name,defecto,shared,frequent);
     if (idRutina)
       idRutVersion= await insertarVersion(idRutina,version,is_Selected);
- }
+ //}
   return idRutVersion;
 }
 
