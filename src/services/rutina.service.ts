@@ -83,11 +83,9 @@ export async function getRutinasById(id: number) {
   return rutina;
 }
 
-export async function generateRecommendedRoutine(
-  routineId: number,
-  userId: number
-) {
+export async function generateRecommendedRoutine(userId: number) {
   const modelClient = new OpenAIClient();
+  //hardcoded, lo tengo que eliminar
   const input = {
     intereses: [
       { id: 1, name: "Salud" },

@@ -13,6 +13,6 @@ router.post("/", addRutina);
 router.get("/user/:userId", getRutinasByUser);
 router.get("/:id", getRutinasId);
 router.put("/", modRutina);
-router.get("/generate/:routineId/:userId", generateRoutine);
+router.get("/generate/:userId", generateRoutine);
 
 export default router;

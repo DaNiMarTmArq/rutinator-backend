@@ -36,9 +36,8 @@ export const getRutinasId = async (req: Request, res: Response) => {
 };
 
 export async function generateRoutine(req: Request, res: Response) {
-  const { routineId, userId } = req.params;
+  const { userId } = req.params;
   const generatedRoutine = await rutinaService.generateRecommendedRoutine(
-    parseInt(routineId),
     parseInt(userId)
   );
   res.status(HttpStatus.OK).json(generatedRoutine);
