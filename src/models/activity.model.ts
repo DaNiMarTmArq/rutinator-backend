@@ -5,6 +5,26 @@ import {
   UpdateActivityRequest,
 } from "./interfaces/activity.interfaces";
 
+export async function findActivityByRoutine(id: number): Promise<Activity[]> {
+  const [rows] = await db.query(
+    `SELECT a.id, a.title, a.activity_categories_id, a.description,
+    a.routines_versions_id, a.start_time, a.end_time, a.day_of_week 
+    FROM activities a
+    JOIN routines_versions rv ON a.routines_versions_id = rv.id
+    JOIN routines r ON r.id = rv.routines_id
+    JOIN users u ON u.id = r.users_id
+    WHERE r.id = ?
+      AND rv.id = (
+        SELECT MAX(rv2.id)
+        FROM routines_versions rv2
+        JOIN routines r2 ON rv2.routines_id = r2.id
+        WHERE r2.id = ?
+      );`,
+    [id, id] 
+  );
+  return rows as Activity[];
+}
+
 export async function findActivityByRoutineByDefault(id: number): Promise<Activity[]> {
   const [rows] = await db.query(
     `SELECT a.id, a.title, a.activity_categories_id, a.description,
@@ -13,15 +33,15 @@ export async function findActivityByRoutineByDefault(id: number): Promise<Activi
       JOIN routines_versions rv ON a.routines_versions_id = rv.id
       JOIN routines r ON r.id = rv.routines_id
       JOIN users u ON u.id = r.users_id
-      WHERE u.id = 21
+      WHERE u.id = ?
       AND r.is_default = 1
       AND rv.id = (
         SELECT MAX(rv2.id)
         FROM routines_versions rv2
         JOIN routines r2 ON rv2.routines_id = r2.id
-        WHERE r2.users_id = 21 AND r2.is_default = 1
+        WHERE r2.users_id = ? AND r2.is_default = 1
   );`,
-    [id] 
+    [id, id] 
   );
   return rows as Activity[];
 }
