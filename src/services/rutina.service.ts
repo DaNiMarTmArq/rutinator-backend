@@ -1,7 +1,7 @@
 import * as rutinaModel from "../models/rutina.model";
 import {insertar,modificar,obtenerTarea} from "../models/rutina.model";
 import {findByName} from "../models/user.model";
-import {insertarVersion,comprobarVersion} from "../models/rutinaVersion.model";
+import {insertarVersion,comprobarVersion,obtenerTareaConVersion} from "../models/rutinaVersion.model";
 import { db } from '../db/db';
 
 export async function añadirRutina(rutina:any): Promise<number> {
@@ -40,7 +40,7 @@ export async function modificarRutina(rutina:any):Promise<number>{
   let idRutVersion=0;
   const is_Selected = false;
     const cambiado= await modificar(id,descripcion,name,defecto,shared,frequent);
-    console.log("CAmbiado:",cambiado);
+    
     if (cambiado>0){
       let version = await comprobarVersion(id);
       console.log("La version es:",version);
@@ -62,5 +62,10 @@ export async function getRutinasByUser(userId: number) {
 
 export async function getRutinasById(id: number) {
   const rutina = obtenerTarea(id);
+  return rutina;
+}
+
+export async function getRutinaConVersiones(id: number) {
+  const rutina = obtenerTareaConVersion(id);
   return rutina;
 }

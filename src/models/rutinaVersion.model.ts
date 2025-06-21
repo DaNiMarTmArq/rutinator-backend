@@ -7,9 +7,11 @@ export async function insertarVersion(idRutina:number,version:number,selec:boole
 }
 
 export async function comprobarVersion(idRutina:number):Promise<number>{
-  console.log("ha entrado en el comprobar_version, el id =",idRutina);
-
   const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const [result]:any = await db.query("SELECT MAX(version_number) As maximo FROM routines_versions WHERE routines_id = ?",[idRutina]);
   return result[0].maximo as number;
+}
+export async function obtenerTareaConVersion(idRutina:number):Promise<number>{
+  const [result]:any = await db.query("select r.id,r.name,r.description,rv.version_number,rv.created_at from routines r inner join routines_versions rv ON r.id=rv.routines_id where r.id=?",[idRutina]);
+  return result;
 }
