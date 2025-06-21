@@ -1,6 +1,5 @@
 import OpenAI from "openai";
 import { PROMPT } from "./client.prompt";
-import { log } from "console";
 
 interface Interes {
   id: number;
@@ -77,7 +76,7 @@ export class OpenAIClient {
 
     const match = outputText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
     if (!match) {
-      log(outputText);
+      console.log(outputText);
       return [];
     }
 
