@@ -11,12 +11,23 @@ import {
   findActivityByUserNameId,
   findActivitiesByRoutineVersion,
   updateActivityById,
+  findActivityByRoutineByDefault,
 } from "../models/activity.model";
 
 import { AppError, UserNotFoundError } from "../errors/errors";
 import { HttpStatus } from "../errors/http.errors";
 
 //
+export async function getActivitiesByRoutineByDefault(userId: number): Promise<Activity[]> {
+const activities = await findActivityByRoutineByDefault(userId);
+
+  if (activities === null || activities === undefined) {
+
+    throw new UserNotFoundError();
+  }
+  return activities;
+}
+
 export async function getActivitiesByUserId(userId: number): Promise<Activity[]> {
 const activities = await findActivityByUserNameId(userId);
 
