@@ -12,13 +12,28 @@ import {
   findActivitiesByRoutineVersion,
   updateActivityById,
   findActivityByRoutineByDefault,
+  findActivityByRoutine,
 } from "../models/activity.model";
 
 import { AppError, UserNotFoundError } from "../errors/errors";
 import { HttpStatus } from "../errors/http.errors";
 
 //
+
+export async function getActivitiesByRoutine(routineId: number): Promise<Activity[]> {
+const activities = await findActivityByRoutine(routineId);
+
+  if (activities === null || activities === undefined) {
+
+    throw new UserNotFoundError();
+  }
+  return activities;
+}
+
 export async function getActivitiesByRoutineByDefault(userId: number): Promise<Activity[]> {
+  if (!userId || isNaN(userId)) {
+    throw new Error('userId inválido');
+  }
 const activities = await findActivityByRoutineByDefault(userId);
 
   if (activities === null || activities === undefined) {

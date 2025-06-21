@@ -7,6 +7,23 @@ import {
 } from "../models/interfaces/activity.interfaces";
 //
 
+export async function getActivitiesByRoutine(req: Request, res: Response) {
+  try {
+    const { routineId } = req.params;
+    const activities = await activityService.getActivitiesByRoutine(parseInt(routineId));
+
+    // Si no hay actividades, devuelve un array vacío
+    if (!activities || activities.length === 0) {
+      return res.status(HttpStatus.OK).json([]);
+    }
+
+    return res.status(HttpStatus.OK).json(activities);
+  } catch (error) {
+    console.error('Error fetching activities:', error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error retrieving activities' + req.params });
+  }
+}
+
 export async function getActivitiesByRoutineByDefault(req: Request, res: Response) {
   try {
     const { userId } = req.params;
