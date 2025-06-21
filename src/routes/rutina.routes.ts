@@ -1,10 +1,18 @@
 import { Router } from "express";
 import {
-  addRutina
+  getRutinasByUser,
+  addRutina,
+  modRutina,
+  getRutinasId,
+  generateRoutine,
 } from "../controllers/rutina.controller";
 
 const router = Router();
 
-//router.post("/", (req, res) => addRutina(req, res));
 router.post("/", addRutina);
+router.get("/user/:userId", getRutinasByUser);
+router.get("/:id", getRutinasId);
+router.put("/", modRutina);
+router.get("/generate/:userId", generateRoutine);
+
 export default router;

@@ -13,27 +13,6 @@ import {
 import { findById } from "../models/user.model";
 import { capitalizeWords } from "../utils/capitalize";
 
-/*
-export async function addGoals(
-  goalsDetails: GoalsDetails
-): Promise<Goals> {
-  const { userId, goalsName } = goalsDetails;
-
-  const goalsUpper = capitalizeWords(goalsName);
-
-  let goals = await getGoalsByName(goalsUpper);
-
-  if (!goals) {
-    const goalsId = await createGoals(goalsUpper);
-    goals = { id: goalsId, goals_name: goalsUpper };
-  }
-
-  await addGoalsToUser(goals.id, userId);
-
-  return goals;
-}
-  */
-
 export async function getByUserId(userId: string): Promise<Goals[]> {
   const user = await findById(parseInt(userId));
   if (!user) {
@@ -50,4 +29,12 @@ export async function deleteGoalsFromUser(
   const goals = await getGoalsByName(goalsName);
   if (!goals) throw new GoalsNotFoundError();
   await removeGoalsFromUser(parseInt(userId), goals.id);
+}
+
+
+export async function deleteGoalsById(
+  userId: string,
+  goalsId: string
+) {
+  await removeGoalsFromUser(parseInt(userId), parseInt(goalsId));
 }

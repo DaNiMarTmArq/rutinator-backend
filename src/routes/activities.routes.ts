@@ -5,6 +5,9 @@ import {
   createActivity,
   updateActivity,
   deleteActivity,
+  getActivitiesByUserId,
+  getActivitiesByRoutineByDefault,
+  getActivitiesByRoutine,
 } from "../controllers/activity.controller";
 import { validateRequest } from "../validators/validate.util";
 import {
@@ -13,6 +16,18 @@ import {
 } from "../validators/activity.schema";
 
 const router = Router();
+
+router.get("/activitiesByRoutine/:routineId", (req, res) => {
+  getActivitiesByRoutine(req, res);
+});
+
+router.get("/activitiesByRoutine/isDefault/:userId", (req, res) => {
+  getActivitiesByRoutineByDefault(req, res);
+});
+
+router.get("/activitybyuser/:idusername", (req, res) => {
+  getActivitiesByUserId(req, res);
+});
 
 router.get("/routine/:routineVersionId", (req, res) =>
   getActivitiesByRoutineVersion(req, res)

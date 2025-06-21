@@ -1,3 +1,9 @@
+
+GET http://localhost:3000/api/interests/17
+Content-Type: application/json
+Authorization: Bearer 
+
+###
 GET http://localhost:3000/api/interests/17
 
 ###
@@ -5,3 +11,11 @@ GET http://localhost:3000/api/goals/17
 
 ###
 http://localhost:3000/api/availability/17
+
+###
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+{
+    "username": "test",
+    "password": "Test123"
+}

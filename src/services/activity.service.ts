@@ -7,20 +7,57 @@ import {
 import {
   createActivity,
   deleteActivityById,
-  findActivitiesByRoutineVersion,
   findActivityById,
+  findActivityByUserNameId,
+  findActivitiesByRoutineVersion,
   updateActivityById,
+  findActivityByRoutineByDefault,
+  findActivityByRoutine,
 } from "../models/activity.model";
 
-import { AppError } from "../errors/errors";
+import { AppError, UserNotFoundError } from "../errors/errors";
 import { HttpStatus } from "../errors/http.errors";
 
+//
+
+export async function getActivitiesByRoutine(routineId: number): Promise<Activity[]> {
+const activities = await findActivityByRoutine(routineId);
+
+  if (activities === null || activities === undefined) {
+
+    throw new UserNotFoundError();
+  }
+  return activities;
+}
+
+export async function getActivitiesByRoutineByDefault(userId: number): Promise<Activity[]> {
+  if (!userId || isNaN(userId)) {
+    throw new Error('userId inválido');
+  }
+const activities = await findActivityByRoutineByDefault(userId);
+
+  if (activities === null || activities === undefined) {
+
+    throw new UserNotFoundError();
+  }
+  return activities;
+}
+
+export async function getActivitiesByUserId(userId: number): Promise<Activity[]> {
+const activities = await findActivityByUserNameId(userId);
+
+  if (activities === null || activities === undefined) {
+
+    throw new UserNotFoundError();
+  }
+  return activities;
+}
+//
 export async function getActivitiesByRoutineVersionId(
   routineVersionId: number
 ): Promise<Activity[]> {
   return await findActivitiesByRoutineVersion(routineVersionId);
 }
-
 export async function getActivityById(id: number): Promise<Activity> {
   const activity = await findActivityById(id);
   if (!activity) {
