@@ -1,12 +1,16 @@
-import * as rutinaModel from "../models/rutina.model";
-import { insertar, modificar, obtenerTarea } from "../models/rutina.model";
-import { findByName } from "../models/user.model";
-import {
-  insertarVersion,
-  comprobarVersion,
-} from "../models/rutinaVersion.model";
 import { db } from "../db/db";
-import { OpenAIClient } from "../utils/openai.client";
+import { insertar, modificar, obtenerTarea } from "../models/rutina.model";
+import {
+  comprobarVersion,
+  insertarVersion,
+} from "../models/rutinaVersion.model";
+import { ModelInput, OpenAIClient } from "../utils/openai.client";
+import { getByUserId } from "./interest.service";
+import { getByUserId as getGoaldByUserId } from "./goals.service";
+import { getSchedulesByUser } from "./availability.service";
+import { Interest } from "../models/interfaces/interest.interfaces";
+import { Goals } from "../models/interfaces/goals.interfaces";
+import { UserAvailability } from "../models/interfaces/availability.interfaces";
 
 export async function añadirRutina(rutina: any): Promise<number> {
   const {
@@ -85,47 +89,54 @@ export async function getRutinasById(id: number) {
 
 export async function generateRecommendedRoutine(userId: number) {
   const modelClient = new OpenAIClient();
-  //hardcoded, lo tengo que eliminar
-  const input = {
-    intereses: [
-      { id: 1, name: "Salud" },
-      { id: 2, name: "Tenis" },
-    ],
-    objetivos: [
-      {
-        id: 1,
-        title: "Jugar más al tenis",
-        description: "Quiero mejorar mi técnica jugando al tenis.",
-        hours_per_week: 2,
-      },
-      {
-        id: 2,
-        title: "Cuidar mi salud",
-        description: "Quiero dedicar más tiempo a cuidarme.",
-        hours_per_week: 1,
-      },
-    ],
-    disponibilidad: [
-      {
-        id: 1,
-        day_of_week: "lunes",
-        start_time: "10:00",
-        end_time: "11:00",
-      },
-      {
-        id: 2,
-        day_of_week: "lunes",
-        start_time: "18:00",
-        end_time: "20:00",
-      },
-      {
-        id: 3,
-        day_of_week: "martes",
-        start_time: "18:30",
-        end_time: "21:00",
-      },
-    ],
-  };
+  const userIdString = String(userId);
+
+  const interests = await getByUserId(userIdString);
+  const objectives = await getGoaldByUserId(userIdString);
+  const availability = await getSchedulesByUser(userIdString);
+
+  const input = createModelInput(interests, objectives, availability);
   const generatedRoutines = await modelClient.generate(input);
   return generatedRoutines;
+}
+
+function createModelInput(
+  interests: Interest[],
+  objectives: Goals[],
+  availability: UserAvailability[]
+): ModelInput {
+  const weekdayMap = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const intereses = interests.map((interest, index) => ({
+    id: index + 1,
+    name: interest.interest_name,
+  }));
+
+  const objetivos = objectives.map((goal, index) => ({
+    id: index + 1,
+    title: goal.goals_name,
+    description: "",
+    hours_per_week: parseInt(goal.hours_per_week),
+  }));
+
+  const disponibilidad = availability.map((slot, index) => ({
+    id: index + 1,
+    day_of_week: weekdayMap[slot.weekday],
+    start_time: slot.start_time,
+    end_time: slot.end_time,
+  }));
+
+  return {
+    intereses,
+    objetivos,
+    disponibilidad,
+  };
 }

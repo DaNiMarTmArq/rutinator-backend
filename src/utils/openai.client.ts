@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { PROMPT } from "./client.prompt";
+import { log } from "console";
 
 interface Interes {
   id: number;
@@ -57,7 +58,7 @@ export class OpenAIClient {
     const modelResponse = await this.client.responses.create({
       prompt: {
         id: "pmpt_6856e0b1d4dc8190bc101fce47d12f1b016c9c1bc969338b",
-        version: "3",
+        version: "4",
       },
       input: [
         {
@@ -76,7 +77,8 @@ export class OpenAIClient {
 
     const match = outputText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
     if (!match) {
-      throw new Error("No valid JSON code block found in the output");
+      log(outputText);
+      return [];
     }
 
     try {
