@@ -41,5 +41,5 @@ export async function generateRoutine(req: Request, res: Response) {
     parseInt(routineId),
     parseInt(userId)
   );
-  res.status(HttpStatus.OK).json();
+  res.status(HttpStatus.OK).json(generatedRoutine);
 }

@@ -88,6 +88,46 @@ export async function generateRecommendedRoutine(
   userId: number
 ) {
   const modelClient = new OpenAIClient();
-  const generatedRoutines = await modelClient.generate();
+  const input = {
+    intereses: [
+      { id: 1, name: "Salud" },
+      { id: 2, name: "Tenis" },
+    ],
+    objetivos: [
+      {
+        id: 1,
+        title: "Jugar más al tenis",
+        description: "Quiero mejorar mi técnica jugando al tenis.",
+        hours_per_week: 2,
+      },
+      {
+        id: 2,
+        title: "Cuidar mi salud",
+        description: "Quiero dedicar más tiempo a cuidarme.",
+        hours_per_week: 1,
+      },
+    ],
+    disponibilidad: [
+      {
+        id: 1,
+        day_of_week: "lunes",
+        start_time: "10:00",
+        end_time: "11:00",
+      },
+      {
+        id: 2,
+        day_of_week: "lunes",
+        start_time: "18:00",
+        end_time: "20:00",
+      },
+      {
+        id: 3,
+        day_of_week: "martes",
+        start_time: "18:30",
+        end_time: "21:00",
+      },
+    ],
+  };
+  const generatedRoutines = await modelClient.generate(input);
   return generatedRoutines;
 }
