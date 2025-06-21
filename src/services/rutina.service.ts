@@ -52,7 +52,7 @@ export async function modificarRutina(rutina:any):Promise<number>{
 
 export async function getRutinasByUser(userId: number) {
   const [rows] = await db.query(
-  `SELECT r.id, r.name, r.description, r.created_at
+  `SELECT r.id, r.name, r.description, r.created_at, r.is_default
    FROM routines r
    WHERE r.users_id = ?`,
   [userId]
