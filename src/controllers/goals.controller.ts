@@ -2,11 +2,27 @@ import { Request, Response } from "express";
 import * as goalsService from "../services/goals.service";
 import { HttpStatus } from "../errors/http.errors";
 import { capitalizeWords } from "../utils/capitalize";
+import { GoalsDetails } from "../models/interfaces/goals.interfaces";
 
 
 export async function getGoalsByUserId(req: Request, res: Response) {
   const goals = await goalsService.getByUserId(req.params.userId);
   res.status(HttpStatus.OK).json(goals);
+}
+
+export async function addGoal(req: Request, res: Response) {
+  const goalDetails: GoalsDetails = {
+    userId: Number(req.params.userId),
+    interestId: req.body.interests_id,
+    goalsName: req.body.goals_name,
+    goalsDescription: req.body.goals_description,
+    hoursPerWeek: req.body.hours_per_week
+  };
+  const interest = await goalsService.addGoal(goalDetails);
+  res.status(HttpStatus.CREATED).json({
+    success: true,
+    interest,
+  });
 }
 
 export async function removeGoalsFromUser(req: Request, res: Response) {
