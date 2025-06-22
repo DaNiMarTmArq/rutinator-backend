@@ -5,6 +5,7 @@ import {
   modRutina,
   getRutinasId,
   generateRoutine,
+  getRutinaVersion
 } from "../controllers/rutina.controller";
 
 const router = Router();
