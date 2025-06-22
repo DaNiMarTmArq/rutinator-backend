@@ -42,7 +42,7 @@ export async function generateRoutine(req: Request, res: Response) {
   res.status(HttpStatus.OK).json(generatedRoutine);
 }
 
-};
+//};
 
 export const getRutinaVersion = async (req: Request, res: Response) => {
   try {
