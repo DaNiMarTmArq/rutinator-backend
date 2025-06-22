@@ -3,7 +3,7 @@ export interface Goals {
   users_id: number;
   interests_id: number;
   goals_name: string;
-  goals_description: string;
+  description: string;
   hours_per_week: number;
 }
 

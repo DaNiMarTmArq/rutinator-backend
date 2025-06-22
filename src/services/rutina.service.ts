@@ -7,7 +7,11 @@ import { getSchedulesByUser } from "./availability.service";
 import { Interest } from "../models/interfaces/interest.interfaces";
 import { Goals } from "../models/interfaces/goals.interfaces";
 import { UserAvailability } from "../models/interfaces/availability.interfaces";
-import {insertarVersion,comprobarVersion,obtenerTareaConVersion} from "../models/rutinaVersion.model";
+import {
+  insertarVersion,
+  comprobarVersion,
+  obtenerTareaConVersion,
+} from "../models/rutinaVersion.model";
 
 export async function añadirRutina(rutina: any): Promise<number> {
   const {
@@ -51,14 +55,21 @@ export async function modificarRutina(rutina: any): Promise<number> {
 
   let idRutVersion = 0;
   const is_Selected = false;
-    const cambiado= await modificar(id,descripcion,name,defecto,shared,frequent);
-    console.log("CAmbiado:",cambiado);
-    if (cambiado>0){
-      let version = await comprobarVersion(id);
-      console.log("La version es:",version);
-      version++;
-      idRutVersion= await insertarVersion(id,version,is_Selected);
-      }
+  const cambiado = await modificar(
+    id,
+    descripcion,
+    name,
+    defecto,
+    shared,
+    frequent
+  );
+  console.log("CAmbiado:", cambiado);
+  if (cambiado > 0) {
+    let version = await comprobarVersion(id);
+    console.log("La version es:", version);
+    version++;
+    idRutVersion = await insertarVersion(id, version, is_Selected);
+  }
   return idRutVersion;
 }
 
@@ -91,6 +102,7 @@ export async function generateRecommendedRoutine(userId: number) {
   const availability = await getSchedulesByUser(userIdString);
 
   const input = createModelInput(interests, objectives, availability);
+
   const generatedRoutines = await modelClient.generate(input);
   return generatedRoutines;
 }
@@ -101,13 +113,14 @@ function createModelInput(
   availability: UserAvailability[]
 ): ModelInput {
   const weekdayMap = [
-    "Sunday",
+    "",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
+    "Sunday",
   ];
 
   const intereses = interests.map((interest, index) => ({
@@ -118,7 +131,7 @@ function createModelInput(
   const objetivos = objectives.map((goal, index) => ({
     id: index + 1,
     title: goal.goals_name,
-    description: "",
+    description: goal.description,
     hours_per_week: goal.hours_per_week,
   }));
 
