@@ -35,13 +35,16 @@ export async function getGoalsByName(
 
 
 export async function addGoalsToUser(
+  userId: number,
   interestsId: number,
-  userId: string
+  goalName: string,
+  goalDescription: string,
+  hoursPerWeek: number
 ): Promise<number> {
   try {
     const [result]: any = await db.query(
       "INSERT INTO users_goals (users_id, interests_id, goals_name, description, hours_per_week) VALUES (?, ?, ?, ?, ?);",
-      [userId, interestsId, 'TITULO', 'DESCRIPCION', 33]
+      [userId, interestsId, goalName, goalDescription, hoursPerWeek]
     );
     return result.insertId as number;
   } catch (error: any) {

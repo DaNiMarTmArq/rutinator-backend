@@ -3,6 +3,7 @@ import {
   addGoalsToUser,
   createGoals,
   getAllGoalsByUser,
+  getGoalsById,
   getGoalsByName,
   removeGoalsFromUser,
 } from "../models/goals.model";
@@ -11,7 +12,7 @@ import {
   GoalsDetails,
 } from "../models/interfaces/goals.interfaces";
 import { findById } from "../models/user.model";
-import { capitalizeWords } from "../utils/capitalize";
+
 
 export async function getByUserId(userId: string): Promise<Goals[]> {
   const user = await findById(parseInt(userId));
@@ -20,6 +21,28 @@ export async function getByUserId(userId: string): Promise<Goals[]> {
   }
   return await getAllGoalsByUser(userId);
 }
+
+
+export async function addGoal(
+  goalsDetails: GoalsDetails
+): Promise<Goals> {
+  const { userId, interestId, goalsName, goalsDescription, hoursPerWeek } = goalsDetails;
+  console.log(goalsDetails)
+  const newGoalId =  await addGoalsToUser(userId, interestId, goalsName, goalsDescription, hoursPerWeek );
+  console.log(newGoalId)
+
+  const goal = { 
+    id: newGoalId,
+    users_id: userId,
+    interests_id: interestId,
+    goals_name: goalsName,
+    goals_description: goalsDescription,
+    hours_per_week: hoursPerWeek
+  };
+
+  return goal;
+}
+
 
 
 export async function deleteGoalsFromUser(
