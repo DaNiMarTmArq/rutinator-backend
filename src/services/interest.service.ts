@@ -16,7 +16,7 @@ import { capitalizeWords } from "../utils/capitalize";
 export async function addInterest(
   interestDetails: InterestDetails
 ): Promise<Interest> {
-  const { userId, interestName } = interestDetails;
+  const { userId, interestName, color } = interestDetails;
 
   const interestUpper = capitalizeWords(interestName);
 
@@ -27,7 +27,7 @@ export async function addInterest(
     interest = { id: interestId, interest_name: interestUpper };
   }
 
-  await addInterestToUser(interest.id, userId);
+  await addInterestToUser(interest.id, userId, color);
 
   return interest;
 }

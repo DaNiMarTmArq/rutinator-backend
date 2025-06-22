@@ -33,12 +33,13 @@ export async function getInterestByName(
 
 export async function addInterestToUser(
   interestId: number,
-  userId: string
+  userId: string,
+  color: string
 ): Promise<number> {
   try {
     const [result]: any = await db.query(
-      "INSERT INTO users_interests (users_id, interests_id) VALUES (?, ?);",
-      [userId, interestId]
+      "INSERT INTO users_interests (users_id, interests_id, color) VALUES (?, ?, ?);",
+      [userId, interestId, color]
     );
     return result.insertId as number;
   } catch (error: any) {
