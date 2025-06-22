@@ -25,8 +25,7 @@ export const getRutinasByUser = async (req: Request, res: Response) => {
 };
 export const getRutinasId = async (req: Request, res: Response) => {
   try {
-    console.log("Esta en el controler");
-    //const userId = Number(req.params.userId);
+    console.log("Esta en el controler, el req tiene:",req.params.id);
     const rutinas = await rutinaService.getRutinasById(Number(req.params.id));
     res.status(200).json(rutinas);
   } catch (error) {
@@ -42,3 +41,16 @@ export async function generateRoutine(req: Request, res: Response) {
   );
   res.status(HttpStatus.OK).json(generatedRoutine);
 }
+
+//};
+
+export const getRutinaVersion = async (req: Request, res: Response) => {
+  try {
+    const rutinas = await rutinaService.getRutinaConVersiones(Number(req.params.id));
+    res.status(200).json(rutinas);
+  } catch (error) {
+    console.error('Error obteniendo rutinas:', error);
+    res.status(500).json({ message: 'Error al obtener rutinas' });
+  }
+
+};

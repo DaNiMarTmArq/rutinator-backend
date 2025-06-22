@@ -1,9 +1,5 @@
 import { db } from "../db/db";
 import { insertar, modificar, obtenerTarea } from "../models/rutina.model";
-import {
-  comprobarVersion,
-  insertarVersion,
-} from "../models/rutinaVersion.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
 import { getByUserId as getGoaldByUserId } from "./goals.service";
@@ -11,6 +7,7 @@ import { getSchedulesByUser } from "./availability.service";
 import { Interest } from "../models/interfaces/interest.interfaces";
 import { Goals } from "../models/interfaces/goals.interfaces";
 import { UserAvailability } from "../models/interfaces/availability.interfaces";
+import {insertarVersion,comprobarVersion,obtenerTareaConVersion} from "../models/rutinaVersion.model";
 
 export async function añadirRutina(rutina: any): Promise<number> {
   const {
@@ -54,21 +51,14 @@ export async function modificarRutina(rutina: any): Promise<number> {
 
   let idRutVersion = 0;
   const is_Selected = false;
-  const cambiado = await modificar(
-    id,
-    descripcion,
-    name,
-    defecto,
-    shared,
-    frequent
-  );
-  console.log("CAmbiado:", cambiado);
-  if (cambiado > 0) {
-    let version = await comprobarVersion(id);
-    console.log("La version es:", version);
-    version++;
-    idRutVersion = await insertarVersion(id, version, is_Selected);
-  }
+    const cambiado= await modificar(id,descripcion,name,defecto,shared,frequent);
+    console.log("CAmbiado:",cambiado);
+    if (cambiado>0){
+      let version = await comprobarVersion(id);
+      console.log("La version es:",version);
+      version++;
+      idRutVersion= await insertarVersion(id,version,is_Selected);
+      }
   return idRutVersion;
 }
 
@@ -84,6 +74,11 @@ export async function getRutinasByUser(userId: number) {
 
 export async function getRutinasById(id: number) {
   const rutina = obtenerTarea(id);
+  return rutina;
+}
+
+export async function getRutinaConVersiones(id: number) {
+  const rutina = obtenerTareaConVersion(id);
   return rutina;
 }
 
