@@ -119,7 +119,7 @@ function createModelInput(
     id: index + 1,
     title: goal.goals_name,
     description: "",
-    hours_per_week: parseInt(goal.hours_per_week),
+    hours_per_week: goal.hours_per_week,
   }));
 
   const disponibilidad = availability.map((slot, index) => ({
