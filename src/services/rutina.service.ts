@@ -11,6 +11,8 @@ import {
   insertarVersion,
   comprobarVersion,
   obtenerTareaConVersion,
+  obtenerVersionSeleccionada,
+  cambiarSeleccionado
 } from "../models/rutinaVersion.model";
 
 export async function añadirRutina(rutina: any): Promise<number> {
@@ -25,9 +27,7 @@ export async function añadirRutina(rutina: any): Promise<number> {
 
   let idRutVersion = 0;
   const version = 1;
-  const is_Selected = false;
-  //const usu = await findByName(usuario);
-  //if (usu){
+  const is_Selected = true;
 
   const idRutina = await insertar(
     usuario,
@@ -39,7 +39,7 @@ export async function añadirRutina(rutina: any): Promise<number> {
   );
   if (idRutina)
     idRutVersion = await insertarVersion(idRutina, version, is_Selected);
-  //}
+ 
   return idRutVersion;
 }
 
@@ -66,7 +66,7 @@ export async function modificarRutina(rutina: any): Promise<number> {
   console.log("CAmbiado:", cambiado);
   if (cambiado > 0) {
     let version = await comprobarVersion(id);
-    console.log("La version es:", version);
+    
     version++;
     idRutVersion = await insertarVersion(id, version, is_Selected);
   }
@@ -147,4 +147,17 @@ function createModelInput(
     objetivos,
     disponibilidad,
   };
+}
+
+export async function cambioVersionRutina(idRutina: number,idNVersion:number) {
+ const idVersionSel = await obtenerVersionSeleccionada(idRutina);
+  if (idVersionSel===idNVersion){
+      return idNVersion;
+  }
+  else{
+    await cambiarSeleccionado(false,idVersionSel);
+    await cambiarSeleccionado(true,idNVersion);
+  }
+return idNVersion;
+  
 }

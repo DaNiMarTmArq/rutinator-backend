@@ -12,6 +12,20 @@ export async function comprobarVersion(idRutina:number):Promise<number>{
   return result[0].maximo as number;
 }
 export async function obtenerTareaConVersion(idRutina:number):Promise<number>{
-  const [result]:any = await db.query("select r.id,r.name,r.description,rv.version_number,rv.created_at from routines r inner join routines_versions rv ON r.id=rv.routines_id where r.id=?",[idRutina]);
+  const [result]:any = await db.query("select r.id,rv.id idVersion,r.name,r.description,rv.version_number,rv.created_at from routines r inner join routines_versions rv ON r.id=rv.routines_id where r.id=?",[idRutina]);
   return result;
+}
+
+export async function obtenerVersionSeleccionada(rutina:number):Promise<number>{
+  const selected =true;
+  const [result]:any = await db.query("select id from routines_versions where routines_id=? and is_selected=?",[rutina,selected]);
+  return result[0].id as number;
+}
+
+export async function cambiarSeleccionado(selected:boolean,idVersion:number):Promise<number>{
+ const [result]:any = await db.query( `UPDATE routines_versions
+     SET is_Selected = ?
+     WHERE id = ?`,
+    [selected, idVersion]);
+  return result.changedRows as number;
 }
