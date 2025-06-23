@@ -42,8 +42,6 @@ export async function generateRoutine(req: Request, res: Response) {
   res.status(HttpStatus.OK).json(generatedRoutine);
 }
 
-//};
-
 export const getRutinaVersion = async (req: Request, res: Response) => {
   try {
     const rutinas = await rutinaService.getRutinaConVersiones(Number(req.params.id));
@@ -52,5 +50,15 @@ export const getRutinaVersion = async (req: Request, res: Response) => {
     console.error('Error obteniendo rutinas:', error);
     res.status(500).json({ message: 'Error al obtener rutinas' });
   }
+}
 
-};
+export const modVersionDefecto = async (req: Request, res: Response) => {
+   try {
+    const idVersion = req.body.idVersion;
+    const idVersionDef = await rutinaService.cambioVersionRutina(Number(req.params.id),idVersion);
+    res.status(200).json(idVersionDef);
+  } catch (error) {
+    console.error('Error modificando la version:', error);
+    res.status(500).json({ message: 'Error modificando version:' });
+  }
+}
