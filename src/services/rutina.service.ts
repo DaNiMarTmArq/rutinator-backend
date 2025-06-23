@@ -63,7 +63,7 @@ export async function modificarRutina(rutina: any): Promise<number> {
     shared,
     frequent
   );
-  console.log("CAmbiado:", cambiado);
+  
   if (cambiado > 0) {
     let version = await comprobarVersion(id);
     
