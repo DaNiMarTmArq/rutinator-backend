@@ -44,7 +44,9 @@ export async function generateRoutine(req: Request, res: Response) {
 
 export const getRutinaVersion = async (req: Request, res: Response) => {
   try {
-    const rutinas = await rutinaService.getRutinaConVersiones(Number(req.params.id));
+    console.log("Esta en el controler, el req tiene:",req.params.id);
+    console.log("Esta en el controler, el req tiene:",req.params.page);
+    const rutinas = await rutinaService.getRutinaConVersiones(Number(req.params.id),Number(req.params.page));
     res.status(200).json(rutinas);
   } catch (error) {
     console.error('Error obteniendo rutinas:', error);

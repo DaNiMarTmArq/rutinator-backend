@@ -10,9 +10,10 @@ import { UserAvailability } from "../models/interfaces/availability.interfaces";
 import {
   insertarVersion,
   comprobarVersion,
-  obtenerTareaConVersion,
+  obtenerRutinaConVersion,
   obtenerVersionSeleccionada,
-  cambiarSeleccionado
+  cambiarSeleccionado,
+  totalRegistros
 } from "../models/rutinaVersion.model";
 
 export async function añadirRutina(rutina: any): Promise<number> {
@@ -85,11 +86,18 @@ export async function getRutinasByUser(userId: number) {
 
 export async function getRutinasById(id: number) {
   const rutina = obtenerTarea(id);
+
   return rutina;
 }
 
-export async function getRutinaConVersiones(id: number) {
-  const rutina = obtenerTareaConVersion(id);
+export async function getRutinaConVersiones(id: number,page:number) {
+  const rutina:any={};
+  rutina.page=page;
+  rutina.total = await totalRegistros(id);
+  rutina.totalPage = (Math.ceil(rutina.total / 5));
+  const offset = (page-1)*5;
+  rutina.data = await obtenerRutinaConVersion(id,offset);
+  
   return rutina;
 }
 
