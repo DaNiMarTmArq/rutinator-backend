@@ -19,7 +19,7 @@ console.log("result",result);
 }
 
 export async function obtenerTarea(id:number):Promise<any>{
-  const [rows]:any = await db.query(`SELECT r.id, r.name, r.description, r.created_at FROM routines r WHERE r.id = ?`,[id]);
+  const [rows]:any = await db.query(`SELECT * FROM routines r WHERE r.id = ?`,[id]);
   return rows;
 }
 

@@ -64,3 +64,22 @@ export const modVersionDefecto = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error modificando version:' });
   }
 }
+
+export const getRutinaPdf = async (req: Request, res: Response) => {
+  const rutinaId = Number(req.params.rutinaId);
+
+  try {
+    const pdfStream = await rutinaService.generarPdfRutinas(rutinaId);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename=rutina-${rutinaId}.pdf`
+    );
+
+    pdfStream.pipe(res);
+  } catch (error) {
+    console.error("Error generando PDF:", error);
+    res.status(500).send("Error al generar el PDF");
+  }
+};
