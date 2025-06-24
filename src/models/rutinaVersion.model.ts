@@ -11,8 +11,8 @@ export async function comprobarVersion(idRutina:number):Promise<number>{
   const [result]:any = await db.query("SELECT MAX(version_number) As maximo FROM routines_versions WHERE routines_id = ?",[idRutina]);
   return result[0].maximo as number;
 }
-export async function obtenerTareaConVersion(idRutina:number):Promise<number>{
-  const [result]:any = await db.query("select r.id,rv.id idVersion,r.name,r.description,rv.version_number,rv.created_at from routines r inner join routines_versions rv ON r.id=rv.routines_id where r.id=?",[idRutina]);
+export async function obtenerRutinaConVersion(idRutina:number,offset:number):Promise<any>{
+  const [result]:any = await db.query("select r.id,rv.id idVersion,r.name,r.description,rv.version_number,rv.created_at from routines r inner join routines_versions rv ON r.id=rv.routines_id where r.id=? limit 5 offset ?",[idRutina,offset]);
   return result;
 }
 
@@ -28,4 +28,9 @@ export async function cambiarSeleccionado(selected:boolean,idVersion:number):Pro
      WHERE id = ?`,
     [selected, idVersion]);
   return result.changedRows as number;
+}
+
+export async function totalRegistros(idRutina:number):Promise<number>{
+  const [result]:any = await db.query("SELECT count(*) as total FROM routines_versions WHERE routines_id = ?",[idRutina]);
+  return result[0].total as number;
 }

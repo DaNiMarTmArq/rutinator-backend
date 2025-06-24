@@ -15,7 +15,7 @@ router.put("/", modRutina);
 router.post("/", addRutina);
 router.get('/user/:userId', getRutinasByUser);
 router.get('/:id', getRutinasId);
-router.get('/version/:id', getRutinaVersion);
+router.get('/version/:id/:page', getRutinaVersion);
 router.put('/version/:id', modVersionDefecto);
 router.get("/generate/:userId", generateRoutine);
 
