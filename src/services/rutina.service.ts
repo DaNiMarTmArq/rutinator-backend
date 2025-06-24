@@ -86,22 +86,18 @@ export async function getRutinasByUser(userId: number) {
 
 export async function getRutinasById(id: number) {
   const rutina = obtenerTarea(id);
+
   return rutina;
 }
 
 export async function getRutinaConVersiones(id: number,page:number) {
   const rutina:any={};
-  console.log("page es:",page);
   rutina.page=page;
-  
   rutina.total = await totalRegistros(id);
   rutina.totalPage = (Math.ceil(rutina.total / 5));
-  //console.log("rutina tiene:",rutina);
-  const offset = (page-1)*5; /*LIMIT 5 OFFSET 10;*/
+  const offset = (page-1)*5;
   rutina.data = await obtenerRutinaConVersion(id,offset);
-  console.log("rutina tiene:",rutina);
-/*Porque: (3 - 1) * 5 = 10 */
-  //const rutina = obtenerTareaConVersion(id);
+  
   return rutina;
 }
 
