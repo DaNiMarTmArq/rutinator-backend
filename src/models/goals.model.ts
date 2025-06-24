@@ -9,9 +9,7 @@ export async function createGoals(goalsName: string): Promise<number> {
   return result.insertId as number;
 }
 
-export async function getGoalsById(
-  goalsId: number
-): Promise<Goals | null> {
+export async function getGoalsById(goalsId: number): Promise<Goals | null> {
   const [rows] = await db.query("SELECT * FROM users_goals WHERE id = ?", [
     goalsId,
   ]);
@@ -19,10 +17,7 @@ export async function getGoalsById(
   return result || null;
 }
 
-
-export async function getGoalsByName(
-  goalsName: string
-): Promise<Goals | null> {
+export async function getGoalsByName(goalsName: string): Promise<Goals | null> {
   const [rows] = await db.query(
     "SELECT * FROM users_goals WHERE goals_name = ?",
     [goalsName]
@@ -30,9 +25,7 @@ export async function getGoalsByName(
 
   const result = (rows as Goals[])[0];
   return result || null;
-  
 }
-
 
 export async function addGoalsToUser(
   userId: number,
@@ -43,25 +36,23 @@ export async function addGoalsToUser(
 ): Promise<number> {
   try {
     const [result]: any = await db.query(
-      "INSERT INTO users_goals (users_id, interests_id, goals_name, description, hours_per_week) VALUES (?, ?, ?, ?, ?);",
+      "INSERT INTO users_goals (users_id, users_interests_id, goals_name, description, hours_per_week) VALUES (?, ?, ?, ?, ?);",
       [userId, interestsId, goalName, goalDescription, hoursPerWeek]
     );
     return result.insertId as number;
   } catch (error: any) {
     if (error.code === "ER_NO_REFERENCED_ROW_2") {
       throw new Error(
-        `Foreign key constraint failed: either user ID or goals does not exist.`
+        `Foreign key constraint failed: either user ID or user interest ID does not exist.`
       );
     } else if (error.code === "ER_DUP_ENTRY") {
-      throw new Error(`User is already linked to that goals.`);
+      throw new Error(`User is already linked to that goal.`);
     }
     throw error;
   }
 }
 
-export async function getAllGoalsByUser(
-  userId: string
-): Promise<Goals[]> {
+export async function getAllGoalsByUser(userId: string): Promise<Goals[]> {
   const [rows] = await db.query(
     `SELECT ug.* 
        FROM users_goals ug
@@ -86,8 +77,8 @@ export async function removeGoalsFromUser(
   userId: number,
   goalsId: number
 ): Promise<void> {
-  await db.query(
-    "DELETE FROM users_goals WHERE users_id = ? AND id = ?",
-    [userId, goalsId]
-  );
+  await db.query("DELETE FROM users_goals WHERE users_id = ? AND id = ?", [
+    userId,
+    goalsId,
+  ]);
 }
