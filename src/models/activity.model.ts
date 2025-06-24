@@ -5,7 +5,7 @@ import {
   UpdateActivityRequest,
 } from "./interfaces/activity.interfaces";
 
-export async function findActivityByRoutine(id: number): Promise<Activity[]> {
+export async function findActivityByRoutine(routineId: number): Promise<Activity[]> {
   const [rows] = await db.query(
     `SELECT a.id, a.title, a.activity_categories_id, a.description,
     a.routines_versions_id, a.start_time, a.end_time, a.day_of_week 
@@ -20,7 +20,7 @@ export async function findActivityByRoutine(id: number): Promise<Activity[]> {
         JOIN routines r2 ON rv2.routines_id = r2.id
         WHERE r2.id = ?
       );`,
-    [id, id] 
+    [routineId, routineId] 
   );
   return rows as Activity[];
 }

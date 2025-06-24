@@ -17,7 +17,7 @@ import {
 
 const router = Router();
 
-router.get("/activitiesByRoutine/:routineId", (req, res) => {
+router.get("/selectActivitiesByRoutine/:routineId", (req, res) => {
   getActivitiesByRoutine(req, res);
 });
 

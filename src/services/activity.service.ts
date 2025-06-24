@@ -21,6 +21,10 @@ import { HttpStatus } from "../errors/http.errors";
 //
 
 export async function getActivitiesByRoutine(routineId: number): Promise<Activity[]> {
+
+   if (!routineId || isNaN(routineId)) {
+    throw new Error('number inválido');
+  }
 const activities = await findActivityByRoutine(routineId);
 
   if (activities === null || activities === undefined) {
