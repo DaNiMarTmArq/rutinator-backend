@@ -7,7 +7,8 @@ import {
   generateRoutine,
   getRutinaVersion,
   modVersionDefecto,
-  getRutinaPdf
+  getRutinaPdf,
+  sendRutinaByEmail
 } from "../controllers/rutina.controller";
 
 const router = Router();
@@ -20,6 +21,6 @@ router.get('/version/:id/:page', getRutinaVersion);
 router.put('/version/:id', modVersionDefecto);
 router.get("/generate/:userId", generateRoutine);
 router.get("/generatePdf/:rutinaId", getRutinaPdf);
-
+router.post("/sendMail/:rutinaId", sendRutinaByEmail);
 
 export default router;
