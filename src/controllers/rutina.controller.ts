@@ -82,4 +82,17 @@ export const getRutinaPdf = async (req: Request, res: Response) => {
     console.error("Error generando PDF:", error);
     res.status(500).send("Error al generar el PDF");
   }
+}
+
+export const sendRutinaByEmail = async (req: Request, res: Response) => {
+  const rutinaId = Number(req.params.rutinaId);
+  const { email } = req.body;
+
+  try {
+    await rutinaService.enviarRutinaPorCorreo(rutinaId, email);
+    res.status(200).json({ message: "Correo enviado" });
+  } catch (error) {
+    console.error("Error al enviar email:", error);
+    res.status(500).json({ message: "Error interno" });
+  }
 };
