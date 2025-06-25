@@ -26,7 +26,7 @@ export interface ModelInput {
   disponibilidad: Disponibilidad[];
 }
 
-interface RecommendedActivities {
+export interface RecommendedActivities {
   title: string;
   description: string;
   day_of_week: string;

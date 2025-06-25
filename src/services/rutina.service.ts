@@ -13,7 +13,7 @@ import {
   obtenerRutinaConVersion,
   obtenerVersionSeleccionada,
   cambiarSeleccionado,
-  totalRegistros
+  totalRegistros,
 } from "../models/rutinaVersion.model";
 import { Readable } from "stream";
 import { pdfRutinasUtil } from "../utils/pdfGenerator";
@@ -42,7 +42,7 @@ export async function añadirRutina(rutina: any): Promise<number> {
   );
   if (idRutina)
     idRutVersion = await insertarVersion(idRutina, version, is_Selected);
- 
+
   return idRutVersion;
 }
 
@@ -66,10 +66,10 @@ export async function modificarRutina(rutina: any): Promise<number> {
     shared,
     frequent
   );
-  
+
   if (cambiado > 0) {
     let version = await comprobarVersion(id);
-    
+
     version++;
     idRutVersion = await insertarVersion(id, version, is_Selected);
   }
@@ -92,14 +92,14 @@ export async function getRutinasById(id: number) {
   return rutina;
 }
 
-export async function getRutinaConVersiones(id: number,page:number) {
-  const rutina:any={};
-  rutina.page=page;
+export async function getRutinaConVersiones(id: number, page: number) {
+  const rutina: any = {};
+  rutina.page = page;
   rutina.total = await totalRegistros(id);
-  rutina.totalPage = (Math.ceil(rutina.total / 5));
-  const offset = (page-1)*5;
-  rutina.data = await obtenerRutinaConVersion(id,offset);
-  
+  rutina.totalPage = Math.ceil(rutina.total / 5);
+  const offset = (page - 1) * 5;
+  rutina.data = await obtenerRutinaConVersion(id, offset);
+
   return rutina;
 }
 
@@ -159,17 +159,18 @@ function createModelInput(
   };
 }
 
-export async function cambioVersionRutina(idRutina: number,idNVersion:number) {
- const idVersionSel = await obtenerVersionSeleccionada(idRutina);
-  if (idVersionSel===idNVersion){
-      return idNVersion;
+export async function cambioVersionRutina(
+  idRutina: number,
+  idNVersion: number
+) {
+  const idVersionSel = await obtenerVersionSeleccionada(idRutina);
+  if (idVersionSel === idNVersion) {
+    return idNVersion;
+  } else {
+    await cambiarSeleccionado(false, idVersionSel);
+    await cambiarSeleccionado(true, idNVersion);
   }
-  else{
-    await cambiarSeleccionado(false,idVersionSel);
-    await cambiarSeleccionado(true,idNVersion);
-  }
-return idNVersion;
-  
+  return idNVersion;
 }
 export async function generarPdfRutinas(id: number): Promise<Readable> {
   return await pdfRutinasUtil(id);
