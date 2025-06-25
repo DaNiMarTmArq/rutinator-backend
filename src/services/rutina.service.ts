@@ -1,5 +1,10 @@
 import { db } from "../db/db";
-import { insertar, modificar, obtenerTarea } from "../models/rutina.model";
+import {
+  crearNuevaVersionRutina,
+  insertar,
+  modificar,
+  obtenerTarea,
+} from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
 import { getByUserId as getGoaldByUserId } from "./goals.service";
@@ -174,4 +179,17 @@ export async function cambioVersionRutina(
 }
 export async function generarPdfRutinas(id: number): Promise<Readable> {
   return await pdfRutinasUtil(id);
+}
+
+/**
+ * Servicio para crear una nueva versión de rutina.
+ * @param rutinaId ID de la rutina existente
+ * @param seleccionada Si esta nueva versión debe ser la seleccionada
+ * @returns ID de la nueva versión creada
+ */
+export async function crearNuevaVersionRutinaService(
+  rutinaId: number,
+  seleccionada: boolean = false
+): Promise<number> {
+  return await crearNuevaVersionRutina(rutinaId, seleccionada);
 }

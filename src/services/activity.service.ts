@@ -132,7 +132,7 @@ export async function saveRecommendedActivities(
       routines_versions_id,
       title: activity.title,
       description: activity.description,
-      activity_categories_id,
+      activity_categories_id: null,
       day_of_week: activity.day_of_week,
       start_time: activity.start_time,
       end_time: activity.end_time,

@@ -8,6 +8,7 @@ import {
   getActivitiesByUserId,
   getActivitiesByRoutineByDefault,
   getActivitiesByRoutine,
+  saveGeneratedAtivities,
 } from "../controllers/activity.controller";
 import { validateRequest } from "../validators/validate.util";
 import {
@@ -39,6 +40,10 @@ router.post(
   "/create",
   validateRequest(CreateActivityRequestSchema),
   (req, res) => createActivity(req, res)
+);
+
+router.post("/generated/add/:routineId", (req, res) =>
+  saveGeneratedAtivities(req, res)
 );
 
 router.patch(

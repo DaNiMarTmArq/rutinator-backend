@@ -6,6 +6,7 @@ import {
   UpdateActivityRequest,
 } from "../models/interfaces/activity.interfaces";
 import { RecommendedActivities } from "../utils/openai.client";
+import * as rutinaService from "../services/rutina.service";
 //
 
 export async function getActivitiesByRoutine(req: Request, res: Response) {
@@ -142,7 +143,46 @@ export async function deleteActivity(req: Request, res: Response) {
 
 export async function saveGeneratedAtivities(req: Request, res: Response) {
   const { routineId } = req.params;
-  const generatedActivityList = req.body as RecommendedActivities[];
-  //const routineVersionId = await rutinaService.crearVersionDeRutina(routineId)
-  //await activityService.saveRecommendedActivities(generatedActivityList, routineVersionId)
+  let generatedActivityList = req.body as RecommendedActivities[];
+
+  // 🔁 Mapear días de la semana en español a ENUM '0'-'6'
+  const dayMap: Record<string, string> = {
+    domingo: "0",
+    lunes: "1",
+    martes: "2",
+    miércoles: "3",
+    jueves: "4",
+    viernes: "5",
+    sábado: "6",
+  };
+
+  generatedActivityList = generatedActivityList.map((activity) => ({
+    ...activity,
+    day_of_week:
+      dayMap[activity.day_of_week.toLowerCase()] ?? activity.day_of_week,
+  }));
+
+  const routineVersionId = await rutinaService.crearNuevaVersionRutinaService(
+    Number(routineId),
+    true
+  );
+
+  const inserts = await activityService.saveRecommendedActivities(
+    generatedActivityList,
+    routineVersionId,
+    routineVersionId
+  );
+
+  if (inserts && inserts.length > 0) {
+    res.status(HttpStatus.CREATED).send({
+      success: true,
+      inserts,
+    });
+    return;
+  }
+
+  res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+    success: false,
+  });
+  return;
 }
