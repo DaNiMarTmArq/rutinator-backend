@@ -6,11 +6,8 @@ import {
   getRutinasId,
   generateRoutine,
   getRutinaVersion,
-<<<<<<< Updated upstream
-  modVersionDefecto
-=======
+  modVersionDefecto,
   getRutinaPdf
->>>>>>> Stashed changes
 } from "../controllers/rutina.controller";
 
 const router = Router();
