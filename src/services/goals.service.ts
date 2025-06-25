@@ -6,6 +6,7 @@ import {
   getGoalsById,
   getGoalsByName,
   removeGoalsFromUser,
+  updateGoalsByIdModel
 } from "../models/goals.model";
 import { Goals, GoalsDetails } from "../models/interfaces/goals.interfaces";
 import { findById } from "../models/user.model";
@@ -21,7 +22,6 @@ export async function getByUserId(userId: string): Promise<Goals[]> {
 export async function addGoal(goalsDetails: GoalsDetails): Promise<Goals> {
   const { userId, interestId, goalsName, goalsDescription, hoursPerWeek } =
     goalsDetails;
-  console.log(goalsDetails);
   const newGoalId = await addGoalsToUser(
     userId,
     interestId,
@@ -29,7 +29,6 @@ export async function addGoal(goalsDetails: GoalsDetails): Promise<Goals> {
     goalsDescription,
     hoursPerWeek
   );
-  console.log(newGoalId);
 
   const goal = {
     id: newGoalId,
@@ -52,3 +51,15 @@ export async function deleteGoalsFromUser(userId: string, goalsName: string) {
 export async function deleteGoalsById(userId: string, goalsId: string) {
   await removeGoalsFromUser(parseInt(userId), parseInt(goalsId));
 }
+
+export async function updateGoalsById(
+  goalId: number,
+  usersInterestsId: number,
+  goals_name: string,
+  description: string,
+  hoursPerWeek: number
+) {
+  const updatedInterest = await updateGoalsByIdModel(Number(goalId), usersInterestsId, goals_name, description, Number(hoursPerWeek));
+  return updatedInterest;
+}
+

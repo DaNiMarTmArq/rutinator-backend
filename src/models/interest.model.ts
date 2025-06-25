@@ -53,13 +53,12 @@ export async function getAllInterestsByUser(
   return rows as Interest[];
 }
 
-export async function userHasInterest(
-  userId: number,
-  interestId: number
+export async function userHasInterestsModel(
+  userId: number
 ): Promise<boolean> {
   const [rows] = await db.query(
-    "SELECT 1 FROM users_interests WHERE users_id = ? AND interests_id = ? LIMIT 1",
-    [userId, interestId]
+    "SELECT 1 FROM users_interests WHERE users_id = ? LIMIT 1",
+    [userId]
   );
   return (rows as any[]).length > 0;
 }

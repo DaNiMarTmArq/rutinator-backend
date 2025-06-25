@@ -37,3 +37,11 @@ export async function removeGoalsById(req: Request, res: Response) {
   await goalsService.deleteGoalsById(userId, goalId);
   res.status(HttpStatus.NO_CONTENT).send();
 }
+
+export async function updateGoalsById(req: Request, res: Response) {
+  const { goalId } = req.params;
+  const { users_interests_id, goals_name, description, hours_per_week} = req.body;
+
+  await goalsService.updateGoalsById(Number(goalId), Number(users_interests_id), goals_name, description, Number(hours_per_week));
+  res.status(HttpStatus.NO_CONTENT).send();
+}
