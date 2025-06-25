@@ -67,3 +67,17 @@ export async function userHasInterest(
 export async function removeInterestById(interestId: number): Promise<void> {
   await db.query("DELETE FROM users_interests WHERE id = ?", [interestId]);
 }
+
+export async function updateInterestByIdModel(
+  interestId: number,
+  interestName: string,
+  color: string
+): Promise<void> {
+  await db.query(
+    `UPDATE users_interests ui
+        SET interest_name = ?,
+            color = ?
+      WHERE ui.id = ?`,
+    [interestName, color, interestId]
+  );
+}

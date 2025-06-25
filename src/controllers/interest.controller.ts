@@ -28,3 +28,11 @@ export async function removeInterestFromUser(req: Request, res: Response) {
   await interestService.deleteInterestFromUser(userId, interestNameUpper);
   res.status(HttpStatus.NO_CONTENT).send();
 }
+
+export async function updateInterestById(req: Request, res: Response) {
+  const { interestId } = req.params;
+  const { interestName, color } = req.body;
+  
+  await interestService.updateInterestById(interestId, interestName, color);
+  res.status(HttpStatus.NO_CONTENT).send();
+}

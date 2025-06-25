@@ -4,6 +4,7 @@ import {
   getAllInterestsByUser,
   getInterestByNameForUser,
   removeInterestById,
+  updateInterestByIdModel
 } from "../models/interest.model";
 import {
   Interest,
@@ -51,4 +52,13 @@ export async function deleteInterestFromUser(
   if (!interest) throw new InterestNotFoundError();
 
   await removeInterestById(interest.id);
+}
+
+export async function updateInterestById(
+  interestId: string,
+  interestName: string,
+  color: string
+) {
+  const updatedInterest = await updateInterestByIdModel(Number(interestId), interestName, color);
+  return updatedInterest;
 }
