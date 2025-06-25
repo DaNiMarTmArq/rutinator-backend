@@ -15,6 +15,8 @@ import {
   cambiarSeleccionado,
   totalRegistros
 } from "../models/rutinaVersion.model";
+import { Readable } from "stream";
+import { pdfRutinasUtil } from "../utils/pdfGenerator";
 
 export async function añadirRutina(rutina: any): Promise<number> {
   const {
@@ -168,4 +170,7 @@ export async function cambioVersionRutina(idRutina: number,idNVersion:number) {
   }
 return idNVersion;
   
+}
+export async function generarPdfRutinas(id: number): Promise<Readable> {
+  return await pdfRutinasUtil(id);
 }
