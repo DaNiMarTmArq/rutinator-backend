@@ -1,10 +1,12 @@
+import { hasInterests } from "../controllers/interest.controller";
 import { InterestNotFoundError, UserNotFoundError } from "../errors/errors";
 import {
   createInterestForUser,
   getAllInterestsByUser,
   getInterestByNameForUser,
   removeInterestById,
-  updateInterestByIdModel
+  updateInterestByIdModel,
+  userHasInterestsModel
 } from "../models/interest.model";
 import {
   Interest,
@@ -61,4 +63,10 @@ export async function updateInterestById(
 ) {
   const updatedInterest = await updateInterestByIdModel(Number(interestId), interestName, color);
   return updatedInterest;
+}
+
+export async function userHasInterests(
+  userId: number
+): Promise<boolean>  {
+  return await userHasInterestsModel(userId);
 }

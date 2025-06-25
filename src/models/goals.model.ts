@@ -82,3 +82,21 @@ export async function removeGoalsFromUser(
     goalsId,
   ]);
 }
+
+export async function updateGoalsByIdModel(
+  id: number,
+  usersInterestsId: number,
+  goals_name: string,
+  description: string,
+  hoursPerWeek: number
+): Promise<void> {
+  await db.query(
+    `UPDATE users_goals ug
+        SET users_interests_id = ?,
+            goals_name = ?,
+            description = ?,
+            hours_per_week = ?
+      WHERE ug.id = ?`,
+    [usersInterestsId, goals_name, description, hoursPerWeek, id]
+  );
+}
