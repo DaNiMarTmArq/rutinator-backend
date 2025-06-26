@@ -3,7 +3,7 @@ import {
   crearNuevaVersionRutina,
   insertar,
   modificar,
-  obtenerTarea,
+  obtenerTarea
 } from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
@@ -18,7 +18,7 @@ import {
   obtenerRutinaConVersion,
   obtenerVersionSeleccionada,
   cambiarSeleccionado,
-  totalRegistros,
+  totalRegistros
 } from "../models/rutinaVersion.model";
 import { Readable } from "stream";
 import { pdfRutinasUtil } from "../utils/pdfGenerator";
@@ -193,3 +193,4 @@ export async function crearNuevaVersionRutinaService(
 ): Promise<number> {
   return await crearNuevaVersionRutina(rutinaId, seleccionada);
 }
+

@@ -83,3 +83,4 @@ export const getRutinaPdf = async (req: Request, res: Response) => {
     res.status(500).send("Error al generar el PDF");
   }
 };
+
