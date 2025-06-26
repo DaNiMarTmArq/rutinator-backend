@@ -39,6 +39,7 @@ router.get("/:activityId", (req, res) => getActivity(req, res));
 
 
 router.get('/:id_routine/max-version', (req, res) => { getMaxVersionRoutineController(req, res)});
+
 router.post(
   "/create",
   validateRequest(CreateActivityRequestSchema),

@@ -35,5 +35,11 @@ export async function totalRegistros(idRutina:number):Promise<number>{
   return result[0].total as number;
 }
 
-
+export async function obtenerVersionesByIdRutina(idRutina:number):Promise<any>{
+  const [result]: any = await db.query(
+    "select * from routines_versions where routines_id=?",
+    [idRutina]
+  );
+  return result;
+}
 
