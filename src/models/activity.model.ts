@@ -7,7 +7,7 @@ import {
 
 export async function findActivityByRoutine(routineId: number): Promise<Activity[]> {
   const [rows] = await db.query(
-    `SELECT a.id, a.title, a.activity_categories_id, a.description,
+    `SELECT rv.id, a.id, a.title, a.activity_categories_id, a.description,
     a.routines_versions_id, a.start_time, a.end_time, a.day_of_week 
     FROM activities a
     JOIN routines_versions rv ON a.routines_versions_id = rv.id
@@ -16,9 +16,10 @@ export async function findActivityByRoutine(routineId: number): Promise<Activity
     WHERE r.id = ?
       AND rv.id = (
         SELECT MAX(rv2.id)
-        FROM routines_versions rv2
-        JOIN routines r2 ON rv2.routines_id = r2.id
-        WHERE r2.id = ?
+		    FROM routines_versions rv2
+		    JOIN routines r2 ON rv2.routines_id = r2.id
+		    WHERE r2.id = ?
+		    AND rv2.is_selected = 1
       );`,
     [routineId, routineId] 
   );
