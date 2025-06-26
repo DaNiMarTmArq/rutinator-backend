@@ -186,3 +186,20 @@ export async function saveGeneratedAtivities(req: Request, res: Response) {
   });
   return;
 }
+
+export async function getMaxVersionRoutineController(req: Request, res: Response) {
+  try {
+    const id_routine = parseInt(req.params.id_routine, 10);
+
+    if (isNaN(id_routine)) {
+      return res.status(400).json({ error: 'ID de rutina inválido' });
+    }
+
+    const maxVersion = await activityService.getMaxVersionRoutineService(id_routine);
+
+    return res.json({ maxVersion });
+  } catch (error) {
+    console.error('Error al obtener la versión máxima:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+}

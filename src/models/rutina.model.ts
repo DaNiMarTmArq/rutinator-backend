@@ -81,3 +81,4 @@ export async function crearNuevaVersionRutina(
 
   return result.insertId as number;
 }
+

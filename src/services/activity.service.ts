@@ -13,6 +13,7 @@ import {
   updateActivityById,
   findActivityByRoutineByDefault,
   findActivityByRoutine,
+  findMaxVersionRoutine,
 } from "../models/activity.model";
 
 import { AppError, UserNotFoundError } from "../errors/errors";
@@ -142,4 +143,7 @@ export async function saveRecommendedActivities(
   }
 
   return insertedIds;
+}
+export async function getMaxVersionRoutineService(id_routine: number): Promise<number | null> {
+  return await findMaxVersionRoutine(id_routine);
 }
