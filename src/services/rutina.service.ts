@@ -1,5 +1,10 @@
 import { db } from "../db/db";
-import { insertar, modificar, obtenerTarea } from "../models/rutina.model";
+import {
+  crearNuevaVersionRutina,
+  insertar,
+  modificar,
+  obtenerTarea
+} from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
 import { getByUserId as getGoaldByUserId } from "./goals.service";
@@ -42,7 +47,7 @@ export async function añadirRutina(rutina: any): Promise<number> {
   );
   if (idRutina)
     idRutVersion = await insertarVersion(idRutina, version, is_Selected);
- 
+
   return idRutVersion;
 }
 
@@ -66,10 +71,10 @@ export async function modificarRutina(rutina: any): Promise<number> {
     shared,
     frequent
   );
-  
+
   if (cambiado > 0) {
     let version = await comprobarVersion(id);
-    
+
     version++;
     idRutVersion = await insertarVersion(id, version, is_Selected);
   }
@@ -92,14 +97,14 @@ export async function getRutinasById(id: number) {
   return rutina;
 }
 
-export async function getRutinaConVersiones(id: number,page:number) {
-  const rutina:any={};
-  rutina.page=page;
+export async function getRutinaConVersiones(id: number, page: number) {
+  const rutina: any = {};
+  rutina.page = page;
   rutina.total = await totalRegistros(id);
-  rutina.totalPage = (Math.ceil(rutina.total / 5));
-  const offset = (page-1)*5;
-  rutina.data = await obtenerRutinaConVersion(id,offset);
-  
+  rutina.totalPage = Math.ceil(rutina.total / 5);
+  const offset = (page - 1) * 5;
+  rutina.data = await obtenerRutinaConVersion(id, offset);
+
   return rutina;
 }
 
@@ -159,18 +164,33 @@ function createModelInput(
   };
 }
 
-export async function cambioVersionRutina(idRutina: number,idNVersion:number) {
- const idVersionSel = await obtenerVersionSeleccionada(idRutina);
-  if (idVersionSel===idNVersion){
-      return idNVersion;
+export async function cambioVersionRutina(
+  idRutina: number,
+  idNVersion: number
+) {
+  const idVersionSel = await obtenerVersionSeleccionada(idRutina);
+  if (idVersionSel === idNVersion) {
+    return idNVersion;
+  } else {
+    await cambiarSeleccionado(false, idVersionSel);
+    await cambiarSeleccionado(true, idNVersion);
   }
-  else{
-    await cambiarSeleccionado(false,idVersionSel);
-    await cambiarSeleccionado(true,idNVersion);
-  }
-return idNVersion;
-  
+  return idNVersion;
 }
 export async function generarPdfRutinas(id: number): Promise<Readable> {
   return await pdfRutinasUtil(id);
 }
+
+/**
+ * Servicio para crear una nueva versión de rutina.
+ * @param rutinaId ID de la rutina existente
+ * @param seleccionada Si esta nueva versión debe ser la seleccionada
+ * @returns ID de la nueva versión creada
+ */
+export async function crearNuevaVersionRutinaService(
+  rutinaId: number,
+  seleccionada: boolean = false
+): Promise<number> {
+  return await crearNuevaVersionRutina(rutinaId, seleccionada);
+}
+
