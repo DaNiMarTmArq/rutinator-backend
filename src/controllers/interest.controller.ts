@@ -17,6 +17,11 @@ export async function addInterest(req: Request, res: Response) {
   });
 }
 
+export async function getInterestsById(req: Request, res: Response) {
+  const interests = await interestService.getById(Number(req.params.interestId));
+  res.status(HttpStatus.OK).json(interests);
+}
+
 export async function getInterestsByUserId(req: Request, res: Response) {
   const interests = await interestService.getByUserId(req.params.userId);
   res.status(HttpStatus.OK).json(interests);
