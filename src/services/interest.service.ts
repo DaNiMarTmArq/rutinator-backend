@@ -4,6 +4,7 @@ import {
   createInterestForUser,
   getAllInterestsByUser,
   getInterestByNameForUser,
+  getInterestById,
   removeInterestById,
   updateInterestByIdModel,
   userHasInterestsModel
@@ -36,6 +37,10 @@ export async function addInterest(
   }
 
   return interest;
+}
+
+export async function getById(interestId: number): Promise<Interest |null> {
+  return await getInterestById(interestId);
 }
 
 export async function getByUserId(userId: string): Promise<Interest[]> {
