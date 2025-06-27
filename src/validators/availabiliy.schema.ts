@@ -4,8 +4,8 @@ export const CreateAvailabilityRequestSchema = z.object({
   weekday: z
     .number()
     .int()
-    .min(0, "Weekday must be between 0 (Sunday) and 6 (Saturday)")
-    .max(6, "Weekday must be between 0 (Sunday) and 6 (Saturday)"),
+    .min(1, "Weekday must be between 1 (Monday) and 7 (Sunday)")
+    .max(7, "Weekday must be between 1 (Monday) and 7 (Sunday)"),
   start_time: z
     .string()
     .regex(
@@ -25,8 +25,8 @@ export const UpdateAvailabilityRequestSchema = z
     weekday: z
       .number()
       .int()
-      .min(0, "Weekday must be between 0 (Sunday) and 6 (Saturday)")
-      .max(6, "Weekday must be between 0 (Sunday) and 6 (Saturday)")
+      .min(1, "Weekday must be between 1 (Monday) and 7 (Sunday)")
+      .max(7, "Weekday must be between 1 (Monday) and 7 (Sunday)")
       .optional(),
     start_time: z
       .string()
