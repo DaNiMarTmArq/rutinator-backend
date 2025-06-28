@@ -3,7 +3,8 @@ import {
   crearNuevaVersionRutina,
   insertar,
   modificar,
-  obtenerTarea
+  obtenerTarea,
+  modificarDefecto
 } from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
@@ -36,17 +37,17 @@ export async function añadirRutina(rutina: any): Promise<number> {
   let idRutVersion = 0;
   const version = 1;
   const is_Selected = true;
+  let valor = 0;
 
-  const idRutina = await insertar(
-    usuario,
-    descripcion,
-    name,
-    defecto,
-    shared,
-    frequent
-  );
-  if (idRutina)
-    idRutVersion = await insertarVersion(idRutina, version, is_Selected);
+  const idRutina = await insertar(usuario,descripcion,name,defecto,shared,frequent);
+  if (idRutina){
+    if (defecto==true){
+      console.log("La rutina es:",idRutina);
+      valor = await  modificarDefecto(idRutina,usuario); 
+    }
+      idRutVersion = await insertarVersion(idRutina, version, is_Selected);
+  }
+
 
   return idRutVersion;
 }
@@ -59,6 +60,7 @@ export async function modificarRutina(rutina: any): Promise<number> {
     shared = false,
     frequent = false,
     id,
+    usuario
   } = rutina;
 
   let idRutVersion = 0;
@@ -71,8 +73,10 @@ export async function modificarRutina(rutina: any): Promise<number> {
     shared,
     frequent
   );
-
   if (cambiado > 0) {
+    if (defecto==true){
+    const valor = await  modificarDefecto(id,usuario);
+    }
     let version = await comprobarVersion(id);
 
     version++;
