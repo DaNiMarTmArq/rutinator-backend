@@ -62,4 +62,12 @@ export async function crearNuevaVersionRutina(
 
   return result.insertId as number;
 }
+export async function modificarDefecto(rutinaId: number,usuario:number):Promise<number>{
+  const defecto=0;
+   const [result]:any = await db.query( `UPDATE routines
+     SET is_default=?
+     WHERE id != ? and users_id=?`,
+    [defecto,rutinaId,usuario]);
+    return result.changedRows as number;
+}
 
