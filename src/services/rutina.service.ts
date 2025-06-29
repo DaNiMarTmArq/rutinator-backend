@@ -58,6 +58,42 @@ export async function añadirRutina(rutina: any): Promise<number> {
   return idRutVersion;
 }
 
+export async function añadirRutinaGenerada(
+  rutina: any
+): Promise<{ idRutVersion: number; idRutina: number }> {
+  const {
+    usuario,
+    descripcion,
+    name,
+    defecto,
+    shared = false,
+    frequent = false,
+  } = rutina;
+
+  let idRutVersion = 0;
+  const version = 1;
+  const is_Selected = true;
+  let valor = 0;
+
+  const idRutina = await insertar(
+    usuario,
+    descripcion,
+    name,
+    defecto,
+    shared,
+    frequent
+  );
+  if (idRutina) {
+    if (defecto == true) {
+      console.log("La rutina es:", idRutina);
+      valor = await modificarDefecto(idRutina, usuario);
+    }
+    idRutVersion = await insertarVersion(idRutina, version, is_Selected);
+  }
+
+  return { idRutVersion, idRutina };
+}
+
 export async function modificarRutina(rutina: any): Promise<number> {
   const {
     descripcion,
