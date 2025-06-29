@@ -1,21 +1,40 @@
 import { db } from "../db/db";
 
-export async function insertar(users_id:number, descripcion:string, nombre:string, defecto:boolean, shared:boolean,frequent:boolean): Promise<number> {
-  const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
-  const defec = defecto===true ? 1 : 0;
-  const [result]:any = await db.query("INSERT INTO routines(users_id, description, name,is_default,created_at,is_shared,is_frequent )values (?,?,?,?,?,?,?)",[users_id,descripcion,nombre,defec,fechaActual,shared,frequent]);
-  return result.insertId as number; 
+export async function insertar(
+  users_id: number,
+  descripcion: string,
+  nombre: string,
+  defecto: boolean,
+  shared: boolean,
+  frequent: boolean
+): Promise<number> {
+  const fechaActual = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const defec = defecto === true ? 1 : 0;
+  const [result]: any = await db.query(
+    "INSERT INTO routines(users_id, description, name,is_default,created_at,is_shared,is_frequent )values (?,?,?,?,?,?,?)",
+    [users_id, descripcion, nombre, defec, fechaActual, shared, frequent]
+  );
+  return result.insertId as number;
 }
 
-export async function modificar(id_rutinas:number,descripcion:string, nombre:string, defecto:boolean, shared:boolean,frequent:boolean): Promise<number> {
-  const fechaActual = new Date().toISOString().slice(0, 19).replace('T', ' ');
-  const defec = defecto===true ? 1 : 0;
-  const [result]:any = await db.query( `UPDATE routines
+export async function modificar(
+  id_rutinas: number,
+  descripcion: string,
+  nombre: string,
+  defecto: boolean,
+  shared: boolean,
+  frequent: boolean
+): Promise<number> {
+  const fechaActual = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const defec = defecto === true ? 1 : 0;
+  const [result]: any = await db.query(
+    `UPDATE routines
      SET name = ?, description = ?, created_at = ?,is_default=?
      WHERE id = ?`,
-    [nombre, descripcion, fechaActual,defec,id_rutinas]);
-console.log("result",result);
-  return result.changedRows as number; 
+    [nombre, descripcion, fechaActual, defec, id_rutinas]
+  );
+  console.log("result", result);
+  return result.changedRows as number;
 }
 
 export async function obtenerTarea(id: number): Promise<any> {
@@ -62,12 +81,33 @@ export async function crearNuevaVersionRutina(
 
   return result.insertId as number;
 }
-export async function modificarDefecto(rutinaId: number,usuario:number):Promise<number>{
-  const defecto=0;
-   const [result]:any = await db.query( `UPDATE routines
+export async function modificarDefecto(
+  rutinaId: number,
+  usuario: number
+): Promise<number> {
+  const defecto = 0;
+  const [result]: any = await db.query(
+    `UPDATE routines
      SET is_default=?
      WHERE id != ? and users_id=?`,
-    [defecto,rutinaId,usuario]);
-    return result.changedRows as number;
+    [defecto, rutinaId, usuario]
+  );
+  return result.changedRows as number;
 }
 
+export async function currentVersionSelected(
+  routineId: number
+): Promise<number> {
+  const [rows]: any = await db.query(
+    `SELECT id FROM routines_versions 
+     WHERE routines_id = ? AND is_selected = 1 
+     LIMIT 1`,
+    [routineId]
+  );
+
+  if (rows.length === 0) {
+    throw new Error(`No selected version found for routine ID ${routineId}`);
+  }
+
+  return rows[0].id as number;
+}

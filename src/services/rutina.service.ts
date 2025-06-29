@@ -5,6 +5,7 @@ import {
   modificar,
   obtenerTarea,
   modificarDefecto,
+  currentVersionSelected,
 } from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
@@ -166,6 +167,10 @@ export async function generateRecommendedRoutine(userId: number) {
 
   const generatedRoutines = await modelClient.generate(input);
   return generatedRoutines;
+}
+
+export async function getSelectedVersion(routineId: number): Promise<number> {
+  return await currentVersionSelected(routineId);
 }
 
 function createModelInput(
