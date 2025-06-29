@@ -123,8 +123,7 @@ export async function removeActivityById(id: number): Promise<void> {
 
 export async function saveRecommendedActivities(
   activities: RecommendedActivities[],
-  routines_versions_id: number,
-  activity_categories_id: number | null
+  routines_versions_id: number
 ): Promise<number[]> {
   const insertedIds: number[] = [];
 
@@ -144,6 +143,8 @@ export async function saveRecommendedActivities(
 
   return insertedIds;
 }
-export async function getMaxVersionRoutineService(id_routine: number): Promise<number | null> {
+export async function getMaxVersionRoutineService(
+  id_routine: number
+): Promise<number | null> {
   return await findMaxVersionRoutine(id_routine);
 }

@@ -162,14 +162,12 @@ export async function saveGeneratedAtivities(req: Request, res: Response) {
       dayMap[activity.day_of_week.toLowerCase()] ?? activity.day_of_week,
   }));
 
-  const routineVersionId = await rutinaService.crearNuevaVersionRutinaService(
-    Number(routineId),
-    true
+  const routineVersionId = await rutinaService.getSelectedVersion(
+    Number(routineId)
   );
 
   const inserts = await activityService.saveRecommendedActivities(
     generatedActivityList,
-    routineVersionId,
     routineVersionId
   );
 
@@ -187,19 +185,24 @@ export async function saveGeneratedAtivities(req: Request, res: Response) {
   return;
 }
 
-export async function getMaxVersionRoutineController(req: Request, res: Response) {
+export async function getMaxVersionRoutineController(
+  req: Request,
+  res: Response
+) {
   try {
     const id_routine = parseInt(req.params.id_routine, 10);
 
     if (isNaN(id_routine)) {
-      return res.status(400).json({ error: 'ID de rutina inválido' });
+      return res.status(400).json({ error: "ID de rutina inválido" });
     }
 
-    const maxVersion = await activityService.getMaxVersionRoutineService(id_routine);
+    const maxVersion = await activityService.getMaxVersionRoutineService(
+      id_routine
+    );
 
     return res.json({ maxVersion });
   } catch (error) {
-    console.error('Error al obtener la versión máxima:', error);
-    return res.status(500).json({ error: 'Error interno del servidor' });
+    console.error("Error al obtener la versión máxima:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
   }
 }
