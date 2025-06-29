@@ -56,6 +56,6 @@ router.patch(
   (req, res) => updateActivity(req, res)
 );
 
-router.delete("/:activityId/delete", (req, res) => deleteActivity(req, res));
+router.delete("/delete/:activityId", (req, res) => deleteActivity(req, res));
 
 export default router;
