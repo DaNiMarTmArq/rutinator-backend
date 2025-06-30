@@ -33,11 +33,13 @@ export async function findActivityByRoutineByDefault(id: number): Promise<Activi
       FROM activities a
       JOIN routines_versions rv ON a.routines_versions_id = rv.id
       JOIN routines r ON r.id = rv.routines_id
-      AND rv.id = (
+      WHERE rv.id = (
         SELECT MAX(rv2.id)
         FROM routines_versions rv2
         JOIN routines r2 ON rv2.routines_id = r2.id
-        WHERE r2.users_id = ? AND rv2.is_selected = 1
+        WHERE r2.users_id = ? 
+        AND rv2.is_selected = 1
+		    AND r2.is_default = 1
   );`,
     [id] 
   );
