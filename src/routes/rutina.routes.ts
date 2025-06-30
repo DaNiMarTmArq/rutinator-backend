@@ -8,7 +8,7 @@ import {
   getRutinaVersion,
   modVersionDefecto,
   getRutinaPdf,
-  sendRutinaByEmail
+  sendRutinaByEmail,
   addRutinaGenerada,
   deleteRutinaId
 } from "../controllers/rutina.controller";
