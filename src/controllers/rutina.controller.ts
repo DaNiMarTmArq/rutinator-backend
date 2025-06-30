@@ -82,5 +82,17 @@ export const getRutinaPdf = async (req: Request, res: Response) => {
     console.error("Error generando PDF:", error);
     res.status(500).send("Error al generar el PDF");
   }
-};
+}
+
+export const deleteRutinaId= async (req: Request, res: Response) => {
+   try {
+    const idVersion = req.body.idVersion;
+    const idRutinaB = await rutinaService.borrarRutina(Number(req.params.id));
+    res.status(200).json("Rutina borrada");
+  } catch (error) {
+    console.error('Error borrando la version:', error);
+    res.status(500).json({ message: 'Error modificando version:' });
+  }
+}
+;
 

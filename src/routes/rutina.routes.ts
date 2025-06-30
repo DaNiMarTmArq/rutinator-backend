@@ -7,13 +7,15 @@ import {
   generateRoutine,
   getRutinaVersion,
   modVersionDefecto,
-  getRutinaPdf
+  getRutinaPdf,
+  deleteRutinaId
 } from "../controllers/rutina.controller";
 
 const router = Router();
 
 router.put("/", modRutina);
 router.post("/", addRutina);
+router.delete('/:id', deleteRutinaId);
 router.get('/user/:userId', getRutinasByUser);
 router.get('/:id', getRutinasId);
 router.get('/version/:id/:page', getRutinaVersion);

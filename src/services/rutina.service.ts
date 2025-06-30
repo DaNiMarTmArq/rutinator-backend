@@ -4,7 +4,8 @@ import {
   insertar,
   modificar,
   obtenerTarea,
-  modificarDefecto
+  modificarDefecto,
+  deleteRutina
 } from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
@@ -19,8 +20,14 @@ import {
   obtenerRutinaConVersion,
   obtenerVersionSeleccionada,
   cambiarSeleccionado,
-  totalRegistros
+  totalRegistros,
+  borrarVersion
 } from "../models/rutinaVersion.model";
+import{
+  borrarActividad
+}
+from "../models/activity.model";
+
 import { Readable } from "stream";
 import { pdfRutinasUtil } from "../utils/pdfGenerator";
 
@@ -196,5 +203,15 @@ export async function crearNuevaVersionRutinaService(
   seleccionada: boolean = false
 ): Promise<number> {
   return await crearNuevaVersionRutina(rutinaId, seleccionada);
+}
+export async function borrarRutina(idRutina:number): Promise<number> {
+  const tarea = await obtenerTarea(idRutina);
+  if (tarea){
+  await borrarActividad(idRutina);
+  await borrarVersion(idRutina);
+  await deleteRutina(idRutina);
+  
+  }
+  return idRutina;
 }
 
