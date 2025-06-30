@@ -44,7 +44,7 @@ export async function obtenerVersionesByIdRutina(idRutina:number):Promise<any>{
 }
 export async function borrarVersion(idRutina:number):Promise<number>{
   const [result]: any = await db.query(
-    "delete from routines_versions rv inner join routines r on r.id=rv.routines_id where r.id = ?",
+    "delete rv from routines_versions rv inner join routines r on r.id=rv.routines_id where r.id = ?",
     [idRutina]);
   
   return idRutina

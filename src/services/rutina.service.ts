@@ -5,8 +5,8 @@ import {
   modificar,
   obtenerTarea,
   modificarDefecto,
-  deleteRutina
-  currentVersionSelected,
+  deleteRutina,
+  currentVersionSelected
 } from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
@@ -249,12 +249,13 @@ export async function crearNuevaVersionRutinaService(
 ): Promise<number> {
   return await crearNuevaVersionRutina(rutinaId, seleccionada);
 }
+
 export async function borrarRutina(idRutina:number): Promise<number> {
-  const tarea = await obtenerTarea(idRutina);
-  if (tarea){
-  await borrarActividad(idRutina);
-  await borrarVersion(idRutina);
-  await deleteRutina(idRutina);
+  const rutina = await obtenerTarea(idRutina);
+  if (rutina.length!=0){
+    const result =await borrarActividad(idRutina);
+    await borrarVersion(idRutina);
+    await deleteRutina(idRutina);
   
   }
   return idRutina;
