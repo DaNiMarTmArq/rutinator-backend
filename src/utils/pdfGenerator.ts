@@ -178,13 +178,12 @@ async function generarInfoVersion(doc: PDFDoc, versions: any) {
 }
   
   
-
 export function generarTabla(
   doc: PDFDoc,
   data: [string, string | number | boolean | null | undefined][],
   options: TablaOptions = {}
 ) {
-  const { startY = doc.y, columnCount = 2, rowHeight = 20 } = options;
+  const { startY = doc.y, columnCount = 2 } = options;
 
   const tableX = doc.page.margins.left;
   let y = startY;
@@ -198,57 +197,69 @@ export function generarTabla(
     rows.push(data.slice(i, i + columnCount));
   }
 
+  const claveHeight = 20; 
+  const paddingVertical = 6; 
+
   rows.forEach((row) => {
-    let x = tableX;
+    const values = row.map(([_, value]) => String(value ?? "—"));
 
-    row.forEach(([key]) => {
-      doc.fillColor("#606160").rect(x, y, colWidth, rowHeight).fill(); 
+    doc.font("Helvetica").fontSize(10);
+    const valueHeights = values.map((text) =>
+      doc.heightOfString(text, {
+        width: colWidth - 10,
+        align: "left",
+      })
+    );
 
+    const maxValueHeight = Math.max(...valueHeights) + paddingVertical;
+    const totalRowHeight = claveHeight + maxValueHeight;
+
+    row.forEach(([key], i) => {
+      const x = tableX + i * colWidth;
       doc
+        .fillColor("#606160")
+        .rect(x, y, colWidth, claveHeight)
+        .fill()
         .strokeColor("#333")
         .lineWidth(1)
-        .rect(x, y, colWidth, rowHeight)
-        .stroke();
-
-      doc
-        .fontSize(10)
-        .fillColor("#fff") 
+        .rect(x, y, colWidth, claveHeight)
+        .stroke()
         .font("Helvetica-Bold")
-        .text(key, x + 5, y + 7, {
+        .fontSize(10)
+        .fillColor("#fff")
+        .text(key, x + 5, y + 5, {
           width: colWidth - 10,
+          align: "left",
         });
-    
-
-      x += colWidth;
     });
 
-    y += rowHeight;
-    x = tableX;
+    y += claveHeight;
 
-    // Segunda fila: valores
-    row.forEach(([_, value]) => {
-      const valueStr = String(value ?? "—");
+    row.forEach(([_, value], i) => {
+      const x = tableX + i * colWidth;
       doc
         .strokeColor("#333")
         .lineWidth(1)
-        .rect(x, y, colWidth, rowHeight)
+        .rect(x, y, colWidth, maxValueHeight)
         .stroke()
+        .font("Helvetica")
         .fontSize(10)
         .fillColor("black")
-        .font("Helvetica")
-        .text(valueStr, x + 5, y + 7, {
+        .text(String(value ?? "—"), x + 5, y + 5, {
           width: colWidth - 10,
+          align: "left",
         });
-
-      x += colWidth;
     });
 
-    y += rowHeight;
+    y += maxValueHeight;
     doc.y = y;
   });
 
   doc.moveDown(1.5);
 }
+
+
+
 
 function generarTablaVariasFilas(doc: PDFDoc, lista: any[], headers: string[]) {
   const tableX = doc.page.margins.left;
