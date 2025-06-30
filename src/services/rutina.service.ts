@@ -6,6 +6,7 @@ import {
   obtenerTarea,
   modificarDefecto,
   deleteRutina
+  currentVersionSelected,
 } from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
@@ -46,17 +47,58 @@ export async function añadirRutina(rutina: any): Promise<number> {
   const is_Selected = true;
   let valor = 0;
 
-  const idRutina = await insertar(usuario,descripcion,name,defecto,shared,frequent);
-  if (idRutina){
-    if (defecto==true){
-      console.log("La rutina es:",idRutina);
-      valor = await  modificarDefecto(idRutina,usuario); 
+  const idRutina = await insertar(
+    usuario,
+    descripcion,
+    name,
+    defecto,
+    shared,
+    frequent
+  );
+  if (idRutina) {
+    if (defecto == true) {
+      console.log("La rutina es:", idRutina);
+      valor = await modificarDefecto(idRutina, usuario);
     }
-      idRutVersion = await insertarVersion(idRutina, version, is_Selected);
+    idRutVersion = await insertarVersion(idRutina, version, is_Selected);
   }
 
-
   return idRutVersion;
+}
+
+export async function añadirRutinaGenerada(
+  rutina: any
+): Promise<{ idRutVersion: number; idRutina: number }> {
+  const {
+    usuario,
+    description,
+    name,
+    defecto,
+    shared = false,
+    frequent = false,
+  } = rutina;
+
+  let idRutVersion = 0;
+  const version = 1;
+  const is_Selected = true;
+  let valor = 0;
+
+  const idRutina = await insertar(
+    usuario,
+    description,
+    name,
+    defecto,
+    shared,
+    frequent
+  );
+  if (idRutina) {
+    if (defecto == true) {
+      valor = await modificarDefecto(idRutina, usuario);
+    }
+    idRutVersion = await insertarVersion(idRutina, version, is_Selected);
+  }
+
+  return { idRutVersion, idRutina };
 }
 
 export async function modificarRutina(rutina: any): Promise<number> {
@@ -67,7 +109,7 @@ export async function modificarRutina(rutina: any): Promise<number> {
     shared = false,
     frequent = false,
     id,
-    usuario
+    usuario,
   } = rutina;
 
   let idRutVersion = 0;
@@ -81,8 +123,8 @@ export async function modificarRutina(rutina: any): Promise<number> {
     frequent
   );
   if (cambiado > 0) {
-    if (defecto==true){
-    const valor = await  modificarDefecto(id,usuario);
+    if (defecto == true) {
+      const valor = await modificarDefecto(id, usuario);
     }
     let version = await comprobarVersion(id);
 
@@ -133,20 +175,23 @@ export async function generateRecommendedRoutine(userId: number) {
   return generatedRoutines;
 }
 
+export async function getSelectedVersion(routineId: number): Promise<number> {
+  return await currentVersionSelected(routineId);
+}
+
 function createModelInput(
   interests: Interest[],
   objectives: Goals[],
   availability: UserAvailability[]
 ): ModelInput {
   const weekdayMap = [
-    "",
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
-    "Sunday",
   ];
 
   const intereses = interests.map((interest, index) => ({
@@ -214,4 +259,3 @@ export async function borrarRutina(idRutina:number): Promise<number> {
   }
   return idRutina;
 }
-

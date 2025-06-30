@@ -6,6 +6,7 @@ import {
   getByUsername,
   updateByUsername,
   updateImageByUsername,
+  deleteUserByUsername,
 } from "../controllers/user.controller";
 import { validateRequest } from "../validators/validate.util";
 import {
@@ -30,5 +31,7 @@ router.put(
   upload.single("image"),
   updateImageByUsername
 );
+
+router.delete("/delete/username/:username", authenticateToken, deleteUserByUsername);
 
 export default router;

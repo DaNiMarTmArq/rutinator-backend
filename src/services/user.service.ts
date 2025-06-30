@@ -14,6 +14,7 @@ import {
   findByName,
   updateImage,
   updateUser,
+  deleteUser,
 } from "../models/user.model";
 import {
   AppError,
@@ -174,4 +175,14 @@ function createToken(userDetails: UserDetails) {
   return jwt.sign(userDetails, JWT_SECRET, {
     expiresIn: JWT_EXPIRATION,
   });
+}
+
+export async function deleteUserByUsername(username: string) {
+  const user = await findByName(username);
+
+  if (!user) {
+    throw new InvalidUserCredentials();
+  }
+
+  const result = await deleteUser(username);  
 }

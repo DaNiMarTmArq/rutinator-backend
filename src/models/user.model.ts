@@ -62,3 +62,12 @@ export async function updateImage(
   );
 }
 
+
+export async function deleteUser(
+  username: string
+): Promise<void> {
+  await db.query(
+    "DELETE FROM users WHERE username = ?",
+    [username]
+  );
+}

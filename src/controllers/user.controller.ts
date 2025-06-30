@@ -38,3 +38,10 @@ export async function updateImageByUsername(req: Request, res: Response) {
   const result = await userService.updateImageByUsername(username, image);
   res.status(HttpStatus.OK).json(result);
 }
+
+export async function deleteUserByUsername(req: Request, res: Response) {
+  const { username } = req.params;
+  
+  const result = await userService.deleteUserByUsername(username);
+  res.status(HttpStatus.OK).json(result);
+}
