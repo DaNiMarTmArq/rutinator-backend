@@ -25,8 +25,8 @@ export const UpdateAvailabilityRequestSchema = z
     weekday: z
       .number()
       .int()
-      .min(0, "Weekday must be between 0 (Sunday) and 6 (Saturday)")
-      .max(6, "Weekday must be between 0 (Sunday) and 6 (Saturday)")
+      .min(0, "Weekday must be between 0 (Sunday) and 7 (Saturday)")
+      .max(6, "Weekday must be between 0 (Sunday) and 7 (Saturday)")
       .optional(),
     start_time: z
       .string()
