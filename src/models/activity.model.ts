@@ -153,3 +153,8 @@ export async function findMaxVersionRoutine(id_routine: number): Promise<number 
 
   return rows[0]?.maxVersion ?? null;
 }
+export async function borrarActividad(id: number): Promise<any> {
+  console.log("El id de la rutina a borrar:",id);
+  const [rows]:any =await db.query("Delete a from activities a inner join routines_versions rv on a.routines_versions_id=rv.id inner join routines r on r.id=rv.routines_id where r.id =?", [id]);
+  console.log(rows);
+}

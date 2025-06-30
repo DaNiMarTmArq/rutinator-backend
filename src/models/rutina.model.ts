@@ -111,3 +111,10 @@ export async function currentVersionSelected(
 
   return rows[0].id as number;
 }
+
+export async function deleteRutina(
+  rutinaId: number): Promise<any> {
+  const [rows]: any = await db.query(`Delete from routines where id=?`,[rutinaId]);
+  return rows[0];
+}
+
