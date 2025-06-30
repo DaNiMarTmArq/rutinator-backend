@@ -85,4 +85,4 @@ El proyecto sigue una arquitectura en capas para mantener el código modular y f
 
 ---
 
-✨ Gracias por usar Rutinator. ¡A crear rutinas exitosas! 💪
+✨ Gracias por usar Rutinator. ¡A crear rutinas y organizar tu tiempo! 💪
