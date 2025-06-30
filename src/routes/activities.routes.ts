@@ -9,7 +9,7 @@ import {
   getActivitiesByRoutineByDefault,
   getActivitiesByRoutine,
   saveGeneratedAtivities,
-  getMaxVersionRoutineController,
+  getVersionRoutineController,
 } from "../controllers/activity.controller";
 import { validateRequest } from "../validators/validate.util";
 import {
@@ -38,7 +38,7 @@ router.get("/routine/:routineVersionId", (req, res) =>
 router.get("/:activityId", (req, res) => getActivity(req, res));
 
 
-router.get('/max-version/:id_routine', (req, res) => { getMaxVersionRoutineController(req, res)});
+router.get('/version/:id_routine', (req, res) => { getVersionRoutineController(req, res)});
 
 router.post(
   "/create",

@@ -145,14 +145,15 @@ export async function deleteActivityById(id: number): Promise<void> {
   await db.query("DELETE FROM activities WHERE id = ?", [id]);
 }
 
-export async function findMaxVersionRoutine(id_routine: number): Promise<number | null> {
+export async function findVersionRoutine(id_routine: number): Promise<number | null> {
   const [rows]: any = await db.query(
-    `SELECT MAX(id) AS maxVersion FROM rutinator_db.routines_versions WHERE routines_id = ?;`,
+    `SELECT id FROM rutinator_db.routines_versions WHERE routines_id = ? AND is_selected = 1;`,
     [id_routine]
   );
 
-  return rows[0]?.maxVersion ?? null;
+  return rows[0]?.id ?? null;
 }
+
 export async function borrarActividad(id: number): Promise<any> {
   console.log("El id de la rutina a borrar:",id);
   const [rows]:any =await db.query("Delete a from activities a inner join routines_versions rv on a.routines_versions_id=rv.id inner join routines r on r.id=rv.routines_id where r.id =?", [id]);
