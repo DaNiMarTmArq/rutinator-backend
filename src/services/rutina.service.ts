@@ -12,6 +12,7 @@ import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
 import { getByUserId as getGoaldByUserId } from "./goals.service";
 import { getSchedulesByUser } from "./availability.service";
+import { getById as findUserById} from "./user.service";
 import { Interest } from "../models/interfaces/interest.interfaces";
 import { Goals } from "../models/interfaces/goals.interfaces";
 import { UserAvailability } from "../models/interfaces/availability.interfaces";
@@ -31,6 +32,8 @@ from "../models/activity.model";
 
 import { Readable } from "stream";
 import { pdfRutinasUtil } from "../utils/pdfGenerator";
+import nodemailer from "nodemailer";
+import { User } from "../models/interfaces/user.interfaces";
 
 export async function añadirRutina(rutina: any): Promise<number> {
   const {
@@ -235,6 +238,55 @@ export async function cambioVersionRutina(
 }
 export async function generarPdfRutinas(id: number): Promise<Readable> {
   return await pdfRutinasUtil(id);
+}
+
+export async function enviarRutinaPorCorreo(
+  rutinaId: number,
+  emailDestino: string
+): Promise<void> {
+  const pdfStream = await pdfRutinasUtil(rutinaId);
+
+    const rutinaRes = await getRutinasById(rutinaId);
+    if (!rutinaRes) throw new Error("No se encontró la rutina");
+    const rutina = rutinaRes[0];
+
+    const usuario : User = await findUserById(rutina.users_id);
+    if (!usuario) throw new Error("No se encontró el usuario");
+
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "rutinatorunir@gmail.com",
+      pass: "cwsj ztqk vwuc izkf",
+    },
+  });
+
+  const mailOptions = {
+    from: '"Rutinator" <rutinatorunir@gmail.com>',
+    to: emailDestino,
+    subject: `Rutina compartida`,
+    text: `El usuario ${usuario.username} compartido una rutina contigo`,
+    attachments: [
+      {
+        filename: `rutina-${rutinaId}.pdf`,
+        content: pdfStream,
+        contentType: "application/pdf",
+      },
+    ],
+  };
+
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error enviando correo:", error);
+        reject(error);
+      } else {
+        console.log("Correo enviado:", info.response);
+        resolve();
+      }
+    });
+  });
 }
 
 /**

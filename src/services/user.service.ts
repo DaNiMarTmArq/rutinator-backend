@@ -166,6 +166,19 @@ export async function updateImageByUsername(
   return updated;
 }
 
+export async function getById(
+  userId: number
+): Promise<User> {
+  const user = await findById(userId);
+
+  if (!user) {
+    throw new Error("Usuario no encontrado");
+  }
+
+  return user;
+}
+
+
 function createToken(userDetails: UserDetails) {
   const JWT_SECRET = process.env.JWT_SECRET;
   const JWT_EXPIRATION = "1d";
