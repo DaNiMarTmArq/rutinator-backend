@@ -5,7 +5,7 @@
 Rutinator es una aplicación diseñada para gestionar **rutinas personalizadas** basadas en tus objetivos, intereses y disponibilidad.  
 Este repositorio contiene el **backend** de la app, encargado de la lógica de negocio, la comunicación con la base de datos y la integración con servicios externos para ofrecer una experiencia completa y escalable.
 
-## 🏗️ Arquitectura de Capas
+## 🏗️ Arquitectura
 
 El proyecto sigue una arquitectura en capas para mantener el código modular y fácil de mantener:
 
