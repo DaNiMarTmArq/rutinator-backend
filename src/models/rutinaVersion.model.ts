@@ -12,7 +12,7 @@ export async function comprobarVersion(idRutina:number):Promise<number>{
   return result[0].maximo as number;
 }
 export async function obtenerRutinaConVersion(idRutina:number,offset:number):Promise<any>{
-  const [result]:any = await db.query("select r.id,rv.id idVersion,r.name,r.description,rv.version_number,rv.created_at from routines r inner join routines_versions rv ON r.id=rv.routines_id where r.id=? limit 5 offset ?",[idRutina,offset]);
+  const [result]:any = await db.query("SELECT COUNT(a.id) AS numActividades,r.id,rv.id AS idVersion,r.name,r.description,rv.version_number,rv.created_at FROM routines_versions rv INNER JOIN routines r ON r.id = rv.routines_id LEFT JOIN activities a ON a.routines_versions_id = rv.id WHERE r.id = ? GROUP BY r.id,rv.id,r.name,r.description,rv.version_number,rv.created_at LIMIT 5 OFFSET ?",[idRutina,offset]);
   return result;
 }
 
