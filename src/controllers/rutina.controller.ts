@@ -113,12 +113,16 @@ export const sendRutinaByEmail = async (req: Request, res: Response) => {
 }
 
 export const deleteRutinaId= async (req: Request, res: Response) => {
-   try {
+  try {
     const idRutinaB = await rutinaService.borrarRutina(Number(req.params.id));
     res.status(200).json({ message: "Rutina borrada" });
-  } catch (error) {
-    console.error('Error borrando rutina:', error);
-    res.status(500).json({ message: 'Error borrando rutina:' });
+  } catch (error:any) {
+    if (error.message?.startsWith("No se puede borrar")) {
+      res.status(403).json({ message: error.message });
+    } else {
+      console.error('Error borrando rutina:', error.message);
+      res.status(500).json({ message: 'Error borrando rutina' });
+    }
   }
 };
 
