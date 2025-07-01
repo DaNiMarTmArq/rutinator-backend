@@ -8,6 +8,8 @@ import {
   getActivitiesByUserId,
   getActivitiesByRoutineByDefault,
   getActivitiesByRoutine,
+  saveGeneratedAtivities,
+  getVersionRoutineController,
 } from "../controllers/activity.controller";
 import { validateRequest } from "../validators/validate.util";
 import {
@@ -17,7 +19,7 @@ import {
 
 const router = Router();
 
-router.get("/activitiesByRoutine/:routineId", (req, res) => {
+router.get("/selectActivitiesByRoutine/:routineId", (req, res) => {
   getActivitiesByRoutine(req, res);
 });
 
@@ -35,10 +37,17 @@ router.get("/routine/:routineVersionId", (req, res) =>
 
 router.get("/:activityId", (req, res) => getActivity(req, res));
 
+
+router.get('/version/:id_routine', (req, res) => { getVersionRoutineController(req, res)});
+
 router.post(
   "/create",
   validateRequest(CreateActivityRequestSchema),
   (req, res) => createActivity(req, res)
+);
+
+router.post("/generated/add/:routineId", (req, res) =>
+  saveGeneratedAtivities(req, res)
 );
 
 router.patch(
@@ -47,6 +56,6 @@ router.patch(
   (req, res) => updateActivity(req, res)
 );
 
-router.delete("/:activityId/delete", (req, res) => deleteActivity(req, res));
+router.delete("/delete/:activityId", (req, res) => deleteActivity(req, res));
 
 export default router;

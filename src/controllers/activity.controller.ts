@@ -5,12 +5,16 @@ import {
   CreateActivityRequest,
   UpdateActivityRequest,
 } from "../models/interfaces/activity.interfaces";
+import { RecommendedActivities } from "../utils/openai.client";
+import * as rutinaService from "../services/rutina.service";
 //
 
 export async function getActivitiesByRoutine(req: Request, res: Response) {
   try {
     const { routineId } = req.params;
-    const activities = await activityService.getActivitiesByRoutine(parseInt(routineId));
+    const activities = await activityService.getActivitiesByRoutine(
+      parseInt(routineId)
+    );
 
     // Si no hay actividades, devuelve un array vacío
     if (!activities || activities.length === 0) {
@@ -19,15 +23,22 @@ export async function getActivitiesByRoutine(req: Request, res: Response) {
 
     return res.status(HttpStatus.OK).json(activities);
   } catch (error) {
-    console.error('Error fetching activities:', error);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error retrieving activities' + req.params });
+    console.error("Error fetching activities:", error);
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Error retrieving activities" + req.params });
   }
 }
 
-export async function getActivitiesByRoutineByDefault(req: Request, res: Response) {
+export async function getActivitiesByRoutineByDefault(
+  req: Request,
+  res: Response
+) {
   try {
     const { userId } = req.params;
-    const activities = await activityService.getActivitiesByRoutineByDefault(parseInt(userId));
+    const activities = await activityService.getActivitiesByRoutineByDefault(
+      parseInt(userId)
+    );
 
     // Si no hay actividades, devuelve un array vacío
     if (!activities || activities.length === 0) {
@@ -36,15 +47,19 @@ export async function getActivitiesByRoutineByDefault(req: Request, res: Respons
 
     return res.status(HttpStatus.OK).json(activities);
   } catch (error) {
-    console.error('Error fetching activities:', error);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error retrieving activities' });
+    console.error("Error fetching activities:", error);
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Error retrieving activities" });
   }
 }
 
 export async function getActivitiesByUserId(req: Request, res: Response) {
   try {
     const { idusername } = req.params;
-    const activities = await activityService.getActivitiesByUserId(parseInt(idusername));
+    const activities = await activityService.getActivitiesByUserId(
+      parseInt(idusername)
+    );
 
     // Si no hay actividades, devuelve un array vacío
     if (!activities || activities.length === 0) {
@@ -53,11 +68,12 @@ export async function getActivitiesByUserId(req: Request, res: Response) {
 
     return res.status(HttpStatus.OK).json(activities);
   } catch (error) {
-    console.error('Error fetching activities:', error);
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Error retrieving activities' });
+    console.error("Error fetching activities:", error);
+    res
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: "Error retrieving activities" });
   }
 }
-
 
 //
 export async function getActivitiesByRoutineVersion(
@@ -123,4 +139,68 @@ export async function deleteActivity(req: Request, res: Response) {
   await activityService.removeActivityById(parseInt(activityId));
 
   res.status(HttpStatus.OK).send({ success: true });
+}
+
+export async function saveGeneratedAtivities(req: Request, res: Response) {
+  const { routineId } = req.params;
+  let generatedActivityList = req.body as RecommendedActivities[];
+
+  // 🔁 Mapear días de la semana en español a ENUM '0'-'6'
+  const dayMap: Record<string, string> = {
+    domingo: "0",
+    lunes: "1",
+    martes: "2",
+    miércoles: "3",
+    jueves: "4",
+    viernes: "5",
+    sábado: "6",
+  };
+
+  generatedActivityList = generatedActivityList.map((activity) => ({
+    ...activity,
+    day_of_week:
+      dayMap[activity.day_of_week.toLowerCase()] ?? activity.day_of_week,
+  }));
+
+  const routineVersionId = await rutinaService.getSelectedVersion(
+    Number(routineId)
+  );
+
+  const inserts = await activityService.saveRecommendedActivities(
+    generatedActivityList,
+    routineVersionId
+  );
+
+  if (inserts && inserts.length > 0) {
+    res.status(HttpStatus.CREATED).send({
+      success: true,
+      inserts,
+    });
+    return;
+  }
+
+  res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+    success: false,
+  });
+  return;
+}
+
+export async function getVersionRoutineController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const id_routine = parseInt(req.params.id_routine, 10);
+
+    if (isNaN(id_routine)) {
+      return res.status(400).json({ error: "ID de rutina inválido" });
+    }
+
+    const versionId = await activityService.getVersionRoutineService(id_routine);
+
+    return res.json({ versionId });
+  } catch (error) {
+    console.error("Error al obtener la versión seleccionada:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
 }

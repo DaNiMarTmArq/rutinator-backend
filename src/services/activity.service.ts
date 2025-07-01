@@ -13,41 +13,49 @@ import {
   updateActivityById,
   findActivityByRoutineByDefault,
   findActivityByRoutine,
+  findVersionRoutine,
 } from "../models/activity.model";
 
 import { AppError, UserNotFoundError } from "../errors/errors";
 import { HttpStatus } from "../errors/http.errors";
+import { RecommendedActivities } from "../utils/openai.client";
 
 //
 
-export async function getActivitiesByRoutine(routineId: number): Promise<Activity[]> {
-const activities = await findActivityByRoutine(routineId);
+export async function getActivitiesByRoutine(
+  routineId: number
+): Promise<Activity[]> {
+  if (!routineId || isNaN(routineId)) {
+    throw new Error("number inválido");
+  }
+  const activities = await findActivityByRoutine(routineId);
 
   if (activities === null || activities === undefined) {
-
     throw new UserNotFoundError();
   }
   return activities;
 }
 
-export async function getActivitiesByRoutineByDefault(userId: number): Promise<Activity[]> {
+export async function getActivitiesByRoutineByDefault(
+  userId: number
+): Promise<Activity[]> {
   if (!userId || isNaN(userId)) {
-    throw new Error('userId inválido');
+    throw new Error("userId inválido");
   }
-const activities = await findActivityByRoutineByDefault(userId);
+  const activities = await findActivityByRoutineByDefault(userId);
 
   if (activities === null || activities === undefined) {
-
     throw new UserNotFoundError();
   }
   return activities;
 }
 
-export async function getActivitiesByUserId(userId: number): Promise<Activity[]> {
-const activities = await findActivityByUserNameId(userId);
+export async function getActivitiesByUserId(
+  userId: number
+): Promise<Activity[]> {
+  const activities = await findActivityByUserNameId(userId);
 
   if (activities === null || activities === undefined) {
-
     throw new UserNotFoundError();
   }
   return activities;
@@ -111,4 +119,32 @@ export async function removeActivityById(id: number): Promise<void> {
   }
 
   await deleteActivityById(id);
+}
+
+export async function saveRecommendedActivities(
+  activities: RecommendedActivities[],
+  routines_versions_id: number
+): Promise<number[]> {
+  const insertedIds: number[] = [];
+
+  for (const activity of activities) {
+    const id = await createActivity({
+      routines_versions_id,
+      title: activity.title,
+      description: activity.description,
+      activity_categories_id: null,
+      day_of_week: activity.day_of_week,
+      start_time: activity.start_time,
+      end_time: activity.end_time,
+    });
+
+    insertedIds.push(id);
+  }
+
+  return insertedIds;
+}
+export async function getVersionRoutineService(
+  id_routine: number
+): Promise<number | null> {
+  return await findVersionRoutine(id_routine);
 }

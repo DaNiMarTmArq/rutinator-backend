@@ -5,9 +5,9 @@ import {
   UpdateActivityRequest,
 } from "./interfaces/activity.interfaces";
 
-export async function findActivityByRoutine(id: number): Promise<Activity[]> {
+export async function findActivityByRoutine(routineId: number): Promise<Activity[]> {
   const [rows] = await db.query(
-    `SELECT a.id, a.title, a.activity_categories_id, a.description,
+    `SELECT rv.id, a.id, a.title, a.activity_categories_id, a.description,
     a.routines_versions_id, a.start_time, a.end_time, a.day_of_week 
     FROM activities a
     JOIN routines_versions rv ON a.routines_versions_id = rv.id
@@ -16,11 +16,12 @@ export async function findActivityByRoutine(id: number): Promise<Activity[]> {
     WHERE r.id = ?
       AND rv.id = (
         SELECT MAX(rv2.id)
-        FROM routines_versions rv2
-        JOIN routines r2 ON rv2.routines_id = r2.id
-        WHERE r2.id = ?
+		    FROM routines_versions rv2
+		    JOIN routines r2 ON rv2.routines_id = r2.id
+		    WHERE r2.id = ?
+		    AND rv2.is_selected = 1
       );`,
-    [id, id] 
+    [routineId, routineId] 
   );
   return rows as Activity[];
 }
@@ -32,16 +33,13 @@ export async function findActivityByRoutineByDefault(id: number): Promise<Activi
       FROM activities a
       JOIN routines_versions rv ON a.routines_versions_id = rv.id
       JOIN routines r ON r.id = rv.routines_id
-      JOIN users u ON u.id = r.users_id
-      WHERE u.id = ?
-      AND r.is_default = 1
       AND rv.id = (
         SELECT MAX(rv2.id)
         FROM routines_versions rv2
         JOIN routines r2 ON rv2.routines_id = r2.id
-        WHERE r2.users_id = ? AND r2.is_default = 1
+        WHERE r2.users_id = ? AND rv2.is_selected = 1
   );`,
-    [id, id] 
+    [id] 
   );
   return rows as Activity[];
 }
@@ -145,4 +143,19 @@ export async function updateActivityById(
 
 export async function deleteActivityById(id: number): Promise<void> {
   await db.query("DELETE FROM activities WHERE id = ?", [id]);
+}
+
+export async function findVersionRoutine(id_routine: number): Promise<number | null> {
+  const [rows]: any = await db.query(
+    `SELECT id FROM rutinator_db.routines_versions WHERE routines_id = ? AND is_selected = 1;`,
+    [id_routine]
+  );
+
+  return rows[0]?.id ?? null;
+}
+
+export async function borrarActividad(id: number): Promise<any> {
+  console.log("El id de la rutina a borrar:",id);
+  const [rows]:any =await db.query("Delete a from activities a inner join routines_versions rv on a.routines_versions_id=rv.id inner join routines r on r.id=rv.routines_id where r.id =?", [id]);
+  console.log(rows);
 }

@@ -5,14 +5,27 @@ import {
   modRutina,
   getRutinasId,
   generateRoutine,
+  getRutinaVersion,
+  modVersionDefecto,
+  getRutinaPdf,
+  sendRutinaByEmail,
+  addRutinaGenerada,
+  deleteRutinaId
 } from "../controllers/rutina.controller";
 
 const router = Router();
 
-router.post("/", addRutina);
-router.get("/user/:userId", getRutinasByUser);
-router.get("/:id", getRutinasId);
 router.put("/", modRutina);
+router.post("/", addRutina);
+router.delete('/:id', deleteRutinaId);
+router.get('/user/:userId', getRutinasByUser);
+router.get('/:id', getRutinasId);
+router.get('/version/:id/:page', getRutinaVersion);
+router.put('/version/:id', modVersionDefecto);
+router.post("/generate/add", addRutinaGenerada);
 router.get("/generate/:userId", generateRoutine);
+router.get("/generatePdf/:rutinaId", getRutinaPdf);
+router.post("/sendMail/:rutinaId", sendRutinaByEmail);
+
 
 export default router;

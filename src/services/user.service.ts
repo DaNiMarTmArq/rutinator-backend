@@ -14,6 +14,7 @@ import {
   findByName,
   updateImage,
   updateUser,
+  deleteUser,
 } from "../models/user.model";
 import {
   AppError,
@@ -165,6 +166,19 @@ export async function updateImageByUsername(
   return updated;
 }
 
+export async function getById(
+  userId: number
+): Promise<User> {
+  const user = await findById(userId);
+
+  if (!user) {
+    throw new Error("Usuario no encontrado");
+  }
+
+  return user;
+}
+
+
 function createToken(userDetails: UserDetails) {
   const JWT_SECRET = process.env.JWT_SECRET;
   const JWT_EXPIRATION = "1d";
@@ -174,4 +188,14 @@ function createToken(userDetails: UserDetails) {
   return jwt.sign(userDetails, JWT_SECRET, {
     expiresIn: JWT_EXPIRATION,
   });
+}
+
+export async function deleteUserByUsername(username: string) {
+  const user = await findByName(username);
+
+  if (!user) {
+    throw new InvalidUserCredentials();
+  }
+
+  const result = await deleteUser(username);  
 }

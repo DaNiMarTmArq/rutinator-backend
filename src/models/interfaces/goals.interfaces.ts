@@ -3,10 +3,14 @@ export interface Goals {
   users_id: number;
   interests_id: number;
   goals_name: string;
-  hours_per_week: string;
+  description: string;
+  hours_per_week: number;
 }
 
 export interface GoalsDetails {
-  userId: string;
+  userId: number;
+  interestId: number;
   goalsName: string;
+  goalsDescription: string;
+  hoursPerWeek: number;
 }

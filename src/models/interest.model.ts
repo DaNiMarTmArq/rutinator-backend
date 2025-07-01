@@ -19,67 +19,64 @@ export async function getInterestById(
   return result || null;
 }
 
-export async function getInterestByName(
-  interestName: string
+export async function getInterestByNameForUser(
+  interestName: string,
+  userId: number
 ): Promise<Interest | null> {
   const [rows] = await db.query(
-    "SELECT * FROM interests WHERE interest_name = ?",
-    [interestName]
+    "SELECT * FROM users_interests WHERE interest_name = ? AND users_id = ?",
+    [interestName, userId]
   );
 
-  const result = (rows as Interest[])[0];
-  return result || null;
+  return (rows as Interest[])[0] || null;
 }
 
-export async function addInterestToUser(
-  interestId: number,
-  userId: string
+export async function createInterestForUser(
+  interestName: string,
+  userId: number,
+  color?: string
 ): Promise<number> {
-  try {
-    const [result]: any = await db.query(
-      "INSERT INTO users_interests (users_id, interests_id) VALUES (?, ?);",
-      [userId, interestId]
-    );
-    return result.insertId as number;
-  } catch (error: any) {
-    if (error.code === "ER_NO_REFERENCED_ROW_2") {
-      throw new Error(
-        `Foreign key constraint failed: either user ID or interest does not exist.`
-      );
-    } else if (error.code === "ER_DUP_ENTRY") {
-      throw new Error(`User is already linked to that interest.`);
-    }
-    throw error;
-  }
+  const [result]: any = await db.query(
+    "INSERT INTO users_interests (interest_name, users_id, color) VALUES (?, ?, ?)",
+    [interestName, userId, color || null]
+  );
+  return result.insertId as number;
 }
 
 export async function getAllInterestsByUser(
   userId: string
 ): Promise<Interest[]> {
   const [rows] = await db.query(
-    "SELECT i.*, ui.color FROM interests i JOIN users_interests ui ON ui.interests_id = i.id WHERE ui.users_id = ?;",
+    "SELECT * FROM users_interests WHERE users_id = ?;",
     [userId]
   );
   return rows as Interest[];
 }
 
-export async function userHasInterest(
-  userId: number,
-  interestId: number
+export async function userHasInterestsModel(
+  userId: number
 ): Promise<boolean> {
   const [rows] = await db.query(
-    "SELECT 1 FROM users_interests WHERE users_id = ? AND interests_id = ? LIMIT 1",
-    [userId, interestId]
+    "SELECT 1 FROM users_interests WHERE users_id = ? LIMIT 1",
+    [userId]
   );
   return (rows as any[]).length > 0;
 }
 
-export async function removeInterestFromUser(
-  userId: number,
-  interestId: number
+export async function removeInterestById(interestId: number): Promise<void> {
+  await db.query("DELETE FROM users_interests WHERE id = ?", [interestId]);
+}
+
+export async function updateInterestByIdModel(
+  interestId: number,
+  interestName: string,
+  color: string
 ): Promise<void> {
   await db.query(
-    "DELETE FROM users_interests WHERE users_id = ? AND interests_id = ?",
-    [userId, interestId]
+    `UPDATE users_interests ui
+        SET interest_name = ?,
+            color = ?
+      WHERE ui.id = ?`,
+    [interestName, color, interestId]
   );
 }

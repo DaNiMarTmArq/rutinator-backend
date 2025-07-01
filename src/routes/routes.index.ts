@@ -7,6 +7,8 @@ import goalsRoutes from "./goals.routes";
 import availabilityRoutes from "./availability.routes";
 import { authenticateToken } from "../middleware/auth.middleware";
 import activitiesRoutes from "./activities.routes";
+import categoriesRoutes from "./categories.routes";
+
 
 const router = Router();
 
@@ -16,5 +18,6 @@ router.use("/goals", authenticateToken, goalsRoutes);
 router.use("/rutinas", authenticateToken, rutinaRoutes);
 router.use("/availability", authenticateToken, availabilityRoutes);
 router.use("/activities", authenticateToken, activitiesRoutes);
+router.use("/categories", authenticateToken, categoriesRoutes);
 
 export default router;

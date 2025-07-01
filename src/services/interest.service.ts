@@ -1,10 +1,13 @@
+import { hasInterests } from "../controllers/interest.controller";
 import { InterestNotFoundError, UserNotFoundError } from "../errors/errors";
 import {
-  addInterestToUser,
-  createInterest,
+  createInterestForUser,
   getAllInterestsByUser,
-  getInterestByName,
-  removeInterestFromUser,
+  getInterestByNameForUser,
+  getInterestById,
+  removeInterestById,
+  updateInterestByIdModel,
+  userHasInterestsModel
 } from "../models/interest.model";
 import {
   Interest,
@@ -16,20 +19,28 @@ import { capitalizeWords } from "../utils/capitalize";
 export async function addInterest(
   interestDetails: InterestDetails
 ): Promise<Interest> {
-  const { userId, interestName } = interestDetails;
+  const { userId, interestName, color } = interestDetails;
 
+  const userIdNumber = Number(userId);
   const interestUpper = capitalizeWords(interestName);
 
-  let interest = await getInterestByName(interestUpper);
+  let interest = await getInterestByNameForUser(interestUpper, userIdNumber);
 
   if (!interest) {
-    const interestId = await createInterest(interestUpper);
-    interest = { id: interestId, interest_name: interestUpper };
+    const id = await createInterestForUser(interestUpper, userIdNumber, color);
+    interest = {
+      id,
+      users_id: userIdNumber,
+      interest_name: interestUpper,
+      color,
+    };
   }
 
-  await addInterestToUser(interest.id, userId);
-
   return interest;
+}
+
+export async function getById(interestId: number): Promise<Interest |null> {
+  return await getInterestById(interestId);
 }
 
 export async function getByUserId(userId: string): Promise<Interest[]> {
@@ -44,7 +55,23 @@ export async function deleteInterestFromUser(
   userId: string,
   interestName: string
 ) {
-  const interest = await getInterestByName(interestName);
+  const interest = await getInterestByNameForUser(interestName, Number(userId));
   if (!interest) throw new InterestNotFoundError();
-  await removeInterestFromUser(parseInt(userId), interest.id);
+
+  await removeInterestById(interest.id);
+}
+
+export async function updateInterestById(
+  interestId: string,
+  interestName: string,
+  color: string
+) {
+  const updatedInterest = await updateInterestByIdModel(Number(interestId), interestName, color);
+  return updatedInterest;
+}
+
+export async function userHasInterests(
+  userId: number
+): Promise<boolean>  {
+  return await userHasInterestsModel(userId);
 }

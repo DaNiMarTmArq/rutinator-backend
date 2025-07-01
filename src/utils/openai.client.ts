@@ -1,6 +1,5 @@
 import OpenAI from "openai";
 import { PROMPT } from "./client.prompt";
-import { log } from "console";
 
 interface Interes {
   id: number;
@@ -27,7 +26,7 @@ export interface ModelInput {
   disponibilidad: Disponibilidad[];
 }
 
-interface RecommendedActivities {
+export interface RecommendedActivities {
   title: string;
   description: string;
   day_of_week: string;
@@ -58,7 +57,7 @@ export class OpenAIClient {
     const modelResponse = await this.client.responses.create({
       prompt: {
         id: "pmpt_6856e0b1d4dc8190bc101fce47d12f1b016c9c1bc969338b",
-        version: "4",
+        version: "5",
       },
       input: [
         {
@@ -77,7 +76,7 @@ export class OpenAIClient {
 
     const match = outputText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
     if (!match) {
-      log(outputText);
+      console.log(outputText);
       return [];
     }
 
