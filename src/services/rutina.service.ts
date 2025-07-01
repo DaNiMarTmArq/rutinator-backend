@@ -116,7 +116,7 @@ export async function modificarRutina(rutina: any): Promise<number> {
   } = rutina;
 
   let idRutVersion = 0;
-  const is_Selected = false;
+  const is_Selected = true;
   const cambiado = await modificar(
     id,
     descripcion,
@@ -129,9 +129,11 @@ export async function modificarRutina(rutina: any): Promise<number> {
     if (defecto == true) {
       const valor = await modificarDefecto(id, usuario);
     }
+    const idVersionSel = await obtenerVersionSeleccionada(id);
     let version = await comprobarVersion(id);
-
+     await cambiarSeleccionado(false, idVersionSel);
     version++;
+   
     idRutVersion = await insertarVersion(id, version, is_Selected);
   }
   return idRutVersion;
