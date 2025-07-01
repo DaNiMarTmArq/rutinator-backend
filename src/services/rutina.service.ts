@@ -304,11 +304,13 @@ export async function crearNuevaVersionRutinaService(
 
 export async function borrarRutina(idRutina:number): Promise<number> {
   const rutina = await obtenerTarea(idRutina);
-  if (rutina.length!=0){
+  if (rutina.length!=0 && rutina.is_default===0){
     const result =await borrarActividad(idRutina);
     await borrarVersion(idRutina);
     await deleteRutina(idRutina);
-  
+  }
+  else{
+    throw {message: "No se puede borrar una rutina por defecto o rutina no encontrada"};
   }
   return idRutina;
 }
