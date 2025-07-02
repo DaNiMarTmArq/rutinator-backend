@@ -123,6 +123,8 @@ export const sendRutinaByEmail = async (req: Request, res: Response) => {
 
 export const deleteRutinaId= async (req: Request, res: Response) => {
   try {
+    console.log(req.params);
+    console.log(req.params.id);
     const idRutinaB = await rutinaService.borrarRutina(Number(req.params.id));
     res.status(200).json({ message: "Rutina borrada" });
   } catch (error:any) {

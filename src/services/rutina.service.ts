@@ -351,7 +351,8 @@ export async function crearNuevaVersionRutinaService(
 
 export async function borrarRutina(idRutina:number): Promise<number> {
   const rutina = await obtenerTarea(idRutina);
-  if (rutina.length!=0 && rutina.is_default===0){
+  console.log("La rutina es:", rutina[0].id);
+  if (rutina[0].length!=0 && rutina[0].is_default===0){
     const result =await borrarActividad(idRutina);
     await borrarVersion(idRutina);
     await deleteRutina(idRutina);
