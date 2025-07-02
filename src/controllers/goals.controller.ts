@@ -18,10 +18,10 @@ export async function addGoal(req: Request, res: Response) {
     goalsDescription: req.body.goals_description,
     hoursPerWeek: req.body.hours_per_week
   };
-  const interest = await goalsService.addGoal(goalDetails);
+  const goal = await goalsService.addGoal(goalDetails);
   res.status(HttpStatus.CREATED).json({
     success: true,
-    interest,
+    goal,
   });
 }
 
