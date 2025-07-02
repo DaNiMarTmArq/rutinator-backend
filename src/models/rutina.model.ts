@@ -26,14 +26,14 @@ export async function modificar(
   frequent: boolean
 ): Promise<number> {
   const fechaActual = new Date().toISOString().slice(0, 19).replace("T", " ");
-  const defec = defecto === true ? 1 : 0;
+  //const defec = defecto == true ? 1 : 0;
+  const defec = Number(defecto);
   const [result]: any = await db.query(
     `UPDATE routines
      SET name = ?, description = ?, created_at = ?,is_default=?
      WHERE id = ?`,
     [nombre, descripcion, fechaActual, defec, id_rutinas]
   );
-  console.log("result", result);
   return result.changedRows as number;
 }
 
@@ -116,5 +116,14 @@ export async function deleteRutina(
   rutinaId: number): Promise<any> {
   const [rows]: any = await db.query(`Delete from routines where id=?`,[rutinaId]);
   return rows[0];
+}
+
+export async function obtenerDefecto(id: number): Promise<number> {
+  const [rows]: any = await db.query(
+    `SELECT is_default FROM routines r WHERE r.id = ?`,
+    [id]
+  );
+  const isDefault = rows[0]?.is_default;
+  return isDefault;
 }
 
