@@ -6,7 +6,8 @@ import {
   obtenerTarea,
   modificarDefecto,
   deleteRutina,
-  currentVersionSelected
+  currentVersionSelected,
+  obtenerDefecto
 } from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
@@ -117,23 +118,22 @@ export async function modificarRutina(rutina: any): Promise<number> {
 
   let idRutVersion = 0;
   const is_Selected = true;
-  const cambiado = await modificar(
-    id,
-    descripcion,
-    name,
-    defecto,
-    shared,
-    frequent
-  );
+
+   const defantes =await obtenerDefecto(id);
+   const esDefecto = Number(defecto);
+   if(defantes !== esDefecto && (!esDefecto)){
+      throw {message: "No se puede modificar la rutina por defecto, eliga otra rutina por defecto"};
+    }
+  const cambiado = await modificar(id,descripcion,name,defecto,shared,frequent);
+
   if (cambiado > 0) {
-    if (defecto == true) {
+   if (defantes !== esDefecto && esDefecto) {
       const valor = await modificarDefecto(id, usuario);
     }
     const idVersionSel = await obtenerVersionSeleccionada(id);
     let version = await comprobarVersion(id);
      await cambiarSeleccionado(false, idVersionSel);
     version++;
-   
     idRutVersion = await insertarVersion(id, version, is_Selected);
   }
   return idRutVersion;
@@ -168,7 +168,6 @@ export async function getRutinasByUser(userId: number) {
 
 export async function getRutinasById(id: number) {
   const rutina = obtenerTarea(id);
-
   return rutina;
 }
 
