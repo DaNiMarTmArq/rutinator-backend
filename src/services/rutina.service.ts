@@ -285,7 +285,35 @@ export async function enviarRutinaPorCorreo(
     from: '"Rutinator" <rutinatorunir@gmail.com>',
     to: emailDestino,
     subject: `Rutina compartida`,
-    text: `El usuario ${usuario.username} compartido una rutina contigo`,
+    html: `
+      <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+          <h2 style="color: #0fa3b1; text-align: center; margin-bottom: 20px;">
+            🏋️ ¡Alguien ha compartido una rutina contigo!
+          </h2>
+  
+          <p style="font-size: 16px; color: #333;">
+            Hola,
+          </p>
+  
+          <p style="font-size: 16px; color: #333;">
+            El usuario <strong>${usuario.username}</strong> ha compartido contigo una rutina personalizada a través de <strong>Rutinator</strong>.
+          </p>
+  
+          <div style="margin: 30px 0; background-color: #e8f6f9; padding: 20px; border-left: 4px solid #0fa3b1; border-radius: 8px;">
+            <p style="margin: 0; font-size: 15px; color: #0a4c52;">
+              Puedes encontrar la rutina adjunta en formato PDF. ¡Esperamos que te motive y te ayude a alcanzar tus objetivos!
+            </p>
+          </div>
+  
+          <p style="font-size: 14px; color: #666;">
+            Si no esperabas este mensaje, puedes ignorarlo con seguridad.
+          </p>
+  
+          <p style="font-size: 14px; color: #666;">Un saludo,<br><strong>El equipo de Rutinator</strong></p>
+        </div>
+      </div>
+    `,
     attachments: [
       {
         filename: `rutina-${rutinaId}.pdf`,
@@ -294,7 +322,8 @@ export async function enviarRutinaPorCorreo(
       },
     ],
   };
-
+  
+  
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
