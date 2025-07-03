@@ -353,7 +353,7 @@ export async function borrarRutina(idRutina:number): Promise<number> {
     await deleteRutina(idRutina);
   }
   else{
-    throw {message: "No se puede borrar una rutina por defecto o rutina no encontrada"};
+    throw {message: "No se puede borrar una rutina por defecto"};
   }
   return idRutina;
 }
