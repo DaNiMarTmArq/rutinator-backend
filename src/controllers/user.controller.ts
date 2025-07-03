@@ -45,3 +45,33 @@ export async function deleteUserByUsername(req: Request, res: Response) {
   const result = await userService.deleteUserByUsername(username);
   res.status(HttpStatus.OK).json(result);
 }
+
+export async function getEmailByUsername(req: Request, res: Response) {
+  const { username } = req.params;
+  try {
+    const result = await userService.getEmailByUsername(username);
+    res.status(HttpStatus.OK).json({ email: result }); 
+  } catch (error) {
+    res.status(HttpStatus.NOT_FOUND).json({ message: "Usuario no encontrado" });
+  }
+}
+
+export const sendVerificationCode = async (req: Request, res: Response) => {
+  const { email, code } = req.body;
+
+  try {
+    await userService.sendVerificationCode(email, code);
+    res.status(200).json({ message: "Correo enviado" });
+  } catch (error) {
+    console.error("Error al enviar email:", error);
+    res.status(500).json({ message: "Error interno" });
+  }
+}
+
+export async function updatePasswordByUsername(req: Request, res: Response) {
+  const { username } = req.params;
+  const {newPassword} = req.body;
+
+  const result = await userService.updatePasswordByUsername(username, newPassword);
+  res.status(HttpStatus.OK).json(result);
+}

@@ -17,9 +17,18 @@ export async function addRutinaGenerada(req: Request, res: Response) {
 }
 
 export async function modRutina(req: Request, res: Response) {
-  console.log("En el controller:req" + req.body);
+  try{
   const rutina = await rutinaService.modificarRutina(req.body);
   res.status(201).json({ message: "rutina modificada" });
+  }
+  catch(error:any){
+    if (error.message?.startsWith("No se puede modificar")) {
+      res.status(403).json({ message: error.message });
+    } else {
+      console.error('Error borrando rutina:', error.message);
+      res.status(500).json({ message: 'Error borrando rutina' });
+    }
+  }
 }
 
 export const getRutinasByUser = async (req: Request, res: Response) => {
@@ -114,6 +123,8 @@ export const sendRutinaByEmail = async (req: Request, res: Response) => {
 
 export const deleteRutinaId= async (req: Request, res: Response) => {
   try {
+    console.log(req.params);
+    console.log(req.params.id);
     const idRutinaB = await rutinaService.borrarRutina(Number(req.params.id));
     res.status(200).json({ message: "Rutina borrada" });
   } catch (error:any) {

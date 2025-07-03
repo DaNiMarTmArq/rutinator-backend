@@ -71,3 +71,26 @@ export async function deleteUser(
     [username]
   );
 }
+
+export async function findEmailByName(
+  userName: string
+): Promise<any | null> {
+  const [rows] = await db.query("SELECT email FROM users WHERE username = ?", [
+    userName,
+  ]);
+
+  // Asumimos que rows[0] tiene forma { email: string }
+  const result = (rows as any[])[0];
+
+  return result?.email ?? null;
+}
+
+export async function updatePassword(
+  username: string,
+  hashedPassword: string
+): Promise<void> {
+  await db.query("UPDATE users SET password_hash = ? WHERE username = ?", [
+    hashedPassword,
+    username,
+  ]);
+}
