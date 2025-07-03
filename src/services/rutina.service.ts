@@ -150,13 +150,8 @@ export async function getRutinasByUser(userId: number) {
       (
         SELECT COUNT(*)
         FROM activities a
-        WHERE a.routines_versions_id = (
-          SELECT rv.id
-          FROM routines_versions rv
-          WHERE rv.routines_id = r.id
-          AND rv.is_selected = 1
-          LIMIT 1
-        )
+        JOIN routines_versions rv ON a.routines_versions_id = rv.id
+        WHERE rv.routines_id = r.id
       ) AS activity_count
     FROM routines r
     WHERE r.users_id = ?`,
