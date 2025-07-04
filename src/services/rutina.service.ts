@@ -147,13 +147,15 @@ export async function getRutinasByUser(userId: number) {
       r.description,
       r.created_at,
       r.is_default,
+      rv.version_number,
       (
         SELECT COUNT(*)
         FROM activities a
-        JOIN routines_versions rv ON a.routines_versions_id = rv.id
-        WHERE rv.routines_id = r.id
+        JOIN routines_versions rv2 ON a.routines_versions_id = rv2.id
+        WHERE rv2.routines_id = r.id AND rv2.is_selected = true
       ) AS activity_count
     FROM routines r
+    LEFT JOIN routines_versions rv ON rv.routines_id = r.id AND rv.is_selected = true
     WHERE r.users_id = ?`,
     [userId]
   );
