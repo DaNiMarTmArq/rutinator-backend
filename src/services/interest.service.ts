@@ -1,4 +1,3 @@
-import { hasInterests } from "../controllers/interest.controller";
 import { InterestNotFoundError, UserNotFoundError } from "../errors/errors";
 import {
   createInterestForUser,
@@ -24,17 +23,13 @@ export async function addInterest(
   const userIdNumber = Number(userId);
   const interestUpper = capitalizeWords(interestName);
 
-  let interest = await getInterestByNameForUser(interestUpper, userIdNumber);
-
-  if (!interest) {
-    const id = await createInterestForUser(interestUpper, userIdNumber, color);
-    interest = {
-      id,
-      users_id: userIdNumber,
-      interest_name: interestUpper,
-      color,
-    };
-  }
+  const id = await createInterestForUser(interestUpper, userIdNumber, color);
+  let interest = {
+    id,
+    users_id: userIdNumber,
+    interest_name: interestUpper,
+    color,
+  };
 
   return interest;
 }

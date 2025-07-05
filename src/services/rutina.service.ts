@@ -6,7 +6,8 @@ import {
   obtenerTarea,
   modificarDefecto,
   deleteRutina,
-  currentVersionSelected
+  currentVersionSelected,
+  obtenerDefecto
 } from "../models/rutina.model";
 import { ModelInput, OpenAIClient } from "../utils/openai.client";
 import { getByUserId } from "./interest.service";
@@ -117,23 +118,22 @@ export async function modificarRutina(rutina: any): Promise<number> {
 
   let idRutVersion = 0;
   const is_Selected = true;
-  const cambiado = await modificar(
-    id,
-    descripcion,
-    name,
-    defecto,
-    shared,
-    frequent
-  );
+
+   const defantes =await obtenerDefecto(id);
+   const esDefecto = Number(defecto);
+   if(defantes !== esDefecto && (!esDefecto)){
+      throw {message: "No se puede modificar la rutina por defecto, eliga otra rutina por defecto"};
+    }
+  const cambiado = await modificar(id,descripcion,name,defecto,shared,frequent);
+
   if (cambiado > 0) {
-    if (defecto == true) {
+   if (defantes !== esDefecto && esDefecto) {
       const valor = await modificarDefecto(id, usuario);
     }
     const idVersionSel = await obtenerVersionSeleccionada(id);
     let version = await comprobarVersion(id);
      await cambiarSeleccionado(false, idVersionSel);
     version++;
-   
     idRutVersion = await insertarVersion(id, version, is_Selected);
   }
   return idRutVersion;
@@ -147,18 +147,15 @@ export async function getRutinasByUser(userId: number) {
       r.description,
       r.created_at,
       r.is_default,
+      rv.version_number,
       (
         SELECT COUNT(*)
         FROM activities a
-        WHERE a.routines_versions_id = (
-          SELECT rv.id
-          FROM routines_versions rv
-          WHERE rv.routines_id = r.id
-          AND rv.is_selected = 1
-          LIMIT 1
-        )
+        JOIN routines_versions rv2 ON a.routines_versions_id = rv2.id
+        WHERE rv2.routines_id = r.id AND rv2.is_selected = true
       ) AS activity_count
     FROM routines r
+    LEFT JOIN routines_versions rv ON rv.routines_id = r.id AND rv.is_selected = true
     WHERE r.users_id = ?`,
     [userId]
   );
@@ -168,7 +165,6 @@ export async function getRutinasByUser(userId: number) {
 
 export async function getRutinasById(id: number) {
   const rutina = obtenerTarea(id);
-
   return rutina;
 }
 
@@ -285,7 +281,35 @@ export async function enviarRutinaPorCorreo(
     from: '"Rutinator" <rutinatorunir@gmail.com>',
     to: emailDestino,
     subject: `Rutina compartida`,
-    text: `El usuario ${usuario.username} compartido una rutina contigo`,
+    html: `
+      <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+          <h2 style="color: #0fa3b1; text-align: center; margin-bottom: 20px;">
+            🏋️ ¡Alguien ha compartido una rutina contigo!
+          </h2>
+  
+          <p style="font-size: 16px; color: #333;">
+            Hola,
+          </p>
+  
+          <p style="font-size: 16px; color: #333;">
+            El usuario <strong>${usuario.username}</strong> ha compartido contigo una rutina personalizada a través de <strong>Rutinator</strong>.
+          </p>
+  
+          <div style="margin: 30px 0; background-color: #e8f6f9; padding: 20px; border-left: 4px solid #0fa3b1; border-radius: 8px;">
+            <p style="margin: 0; font-size: 15px; color: #0a4c52;">
+              Puedes encontrar la rutina adjunta en formato PDF. ¡Esperamos que te motive y te ayude a alcanzar tus objetivos!
+            </p>
+          </div>
+  
+          <p style="font-size: 14px; color: #666;">
+            Si no esperabas este mensaje, puedes ignorarlo con seguridad.
+          </p>
+  
+          <p style="font-size: 14px; color: #666;">Un saludo,<br><strong>El equipo de Rutinator</strong></p>
+        </div>
+      </div>
+    `,
     attachments: [
       {
         filename: `rutina-${rutinaId}.pdf`,
@@ -294,7 +318,8 @@ export async function enviarRutinaPorCorreo(
       },
     ],
   };
-
+  
+  
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -323,13 +348,14 @@ export async function crearNuevaVersionRutinaService(
 
 export async function borrarRutina(idRutina:number): Promise<number> {
   const rutina = await obtenerTarea(idRutina);
-  if (rutina.length!=0 && rutina.is_default===0){
+  console.log("La rutina es:", rutina[0].id);
+  if (rutina[0].length!=0 && rutina[0].is_default===0){
     const result =await borrarActividad(idRutina);
     await borrarVersion(idRutina);
     await deleteRutina(idRutina);
   }
   else{
-    throw {message: "No se puede borrar una rutina por defecto o rutina no encontrada"};
+    throw {message: "No se puede borrar una rutina por defecto"};
   }
   return idRutina;
 }
