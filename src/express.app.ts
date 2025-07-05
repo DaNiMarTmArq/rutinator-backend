@@ -6,9 +6,20 @@ import { globalErrorHandler } from "./errors/error.handler";
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:4200",
+  "https://rutinator.netlify.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:4200",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
